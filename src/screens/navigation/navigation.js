@@ -1,0 +1,18 @@
+import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import SplashScreen from "../SplashScreen";
+import HomeScreen from "../HomeScreen";
+const Stack = createNativeStackNavigator();
+
+export default function Navigation() {
+
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='splash' screenOptions={{ headerShown: false }}>
+                <Stack.Screen name='home' component={HomeScreen} />
+                <Stack.Screen name='splash' component={SplashScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
+}
