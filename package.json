@@ -14,13 +14,16 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/native-stack": "^6.11.0",
+    "cheerio": "^1.0.0",
+    "fast-xml-parser": "^4.5.1",
     "react": "18.3.1",
     "react-native": "0.75.3",
     "react-native-gesture-handler": "^2.21.2",
     "react-native-reanimated": "^3.16.6",
     "react-native-reanimated-carousel": "^3.5.1",
     "react-native-safe-area-context": "^5.0.0",
-    "react-native-screens": "^4.4.0"
+    "react-native-screens": "^4.4.0",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
