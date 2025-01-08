@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, Image, FlatList } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { XMLParser } from "fast-xml-parser";
-import cheerio from 'cheerio';
 import 'react-native-gesture-handler';
 
 import DiceScreen from "../DiceScreen";
 import SettingScreen from "../SettingScreen";
+import LotteryDisplay from "../LotteryDisplay";
 import Dice from '../../../assets/dice.png';
 import Home from '../../../assets/Home.png';
 import Account from '../../../assets/account.png';
 import logo from '../../../assets/LotteryLogo.png';
+import vector from '../../../assets/Vector_18.png'
 
 
 const Tab = createBottomTabNavigator();
@@ -27,7 +28,7 @@ const AnimatedText = ({ value }) => {
         // Convert string like "53,382,262,500đ" to number
         const targetValue = parseInt(value.replace(/[^0-9]/g, ''));
         const startValue = 0;
-        const duration = 2000; // 2 seconds animation
+        const duration = 3000; // 3 seconds animation
         const framesPerSecond = 60;
         const totalFrames = (duration / 1000) * framesPerSecond;
         let frame = 0;
@@ -72,7 +73,7 @@ const HomeScreen = () => {
     const [jackpotDate, setJackpotDate] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [drawDetails, setDrawDetails] = useState(null);
+    const [lotteryData, setLotteryData] = useState([]);
 
     const fetchRSS = async () => {
         setLoading(true);
@@ -113,79 +114,70 @@ const HomeScreen = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    const fetchDrawDetails = async () => {
-        setLoading(true);
+    const fetchLotteryResults = async () => {
+        setLoading(true); // Start loading indicator
         try {
-            const response = await fetch(RSS_URL);
-            const responseText = await response.text(); 
-    
-            // Log raw response for debugging
-            console.log('Raw response:', responseText);
-    
-            // Use Cheerio or similar library to parse HTML/RSS feed
-            const $ = cheerio.load(responseText);
-    
-            // Extract the necessary details from the HTML/RSS feed
-            const ticketTurn = $('#result-games').text().trim();
-            const drawDate = $('.box-result-detail small').text().trim();
-            const finalNumber = $('.box-result-detail .result').text().trim();
-    
-            if (ticketTurn && drawDate && finalNumber) {
-                console.log('Extracted Draw Details:');
-                console.log('Ticket Turn:', ticketTurn);
-                console.log('Draw Date:', drawDate);
-                console.log('Final Number:', finalNumber);
-    
-                // Set the state with the extracted details
-                setDrawDetails({
-                    ticketTurn,
-                    drawDate,
-                    finalNumber,
+            const response = await fetch('http://localhost:3000/api/lottery-result');
+            const responseData = await response.json(); // Parse JSON response
+
+            if (responseData && Array.isArray(responseData)) {
+                // Map backend response to desired frontend structure
+                const lotteryResults = responseData.map((item) => {
+                    const numbers = Array.isArray(item.resultNumbers) ? item.resultNumbers : [];
+                    const ticketTurn = item.ticketTurn || 'N/A';
+                    const jackpotValue = item.jackpotValue || 'N/A';
+                    const drawDate = item.drawDate || 'N/A';
+
+                    return {
+                        numbers,
+                        ticketTurn,
+                        jackpotValue,
+                        drawDate,
+                    };
                 });
-                setError(null);
+
+                setLotteryData(lotteryResults); // Update state with processed data
+                setError(null); // Clear any existing error
             } else {
-                setError('Incomplete draw details received');
-                console.warn('Incomplete draw details:', {
-                    ticketTurn,
-                    drawDate,
-                    finalNumber,
-                });
+                console.error('No valid lottery data received.');
+                setError('No lottery data available'); // Display error to user
             }
         } catch (error) {
-            console.error('Error fetching draw details:', error.message);
-            setError(`Failed to fetch draw details: ${error.message}`);
+            console.error('Error fetching lottery results:', error);
+            setError('Failed to fetch lottery results. Please try again later.');
         } finally {
-            setLoading(false);
+            setLoading(false); // Stop loading indicator
         }
     };
-    
+
     useEffect(() => {
-        fetchDrawDetails();
-    }, []);    
+        fetchLotteryResults(); // Initial fetch on component mount
+        const intervalId = setInterval(fetchLotteryResults, 300000); // Refetch every 5 minutes
+        return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    }, []);
 
     return (
         <View style={styles.container}>
+            <Image source={vector} style={styles.vector}/>
             <View style={styles.logoContainer}>
                 <Image source={logo} style={styles.logo} />
             </View>
+
+            {/* Jackpot Value */}
             <View style={styles.contentContainer}>
-                {loading && !jackpotValue ? (
-                    <Text style={styles.loading}>Loading...</Text>
-                ) : error ? (
-                    <Text style={styles.error}>{error}</Text>
-                ) : (
-                    <>
-                        <Text style={styles.label}>Jackpot</Text>
-                        <AnimatedText value={jackpotValue} style={styles.jackpotValue} />
-                        <Text style={styles.description}>
-                            (Jackpot Mega 6/45 mở thưởng {jackpotDate})
-                        </Text>
-                    </>
-                )}
+                <Text style={styles.label}>Jackpot</Text>
+                <AnimatedText value={jackpotValue} style={styles.jackpotValue} />
+                <Text style={styles.description}>
+                    (Jackpot Mega 6/45 mở thưởng {jackpotDate})
+                </Text>
             </View>
+            <LotteryDisplay 
+                lotteryData={lotteryData}
+                loading={loading}
+                error={error}
+            />
         </View>
     );
-
 };
 
 function MyTabs() {
@@ -331,6 +323,60 @@ const styles = StyleSheet.create({
         color: 'red',
         textAlign: 'center',
         fontSize: 16,
+    },
+    resultsContainer: {
+        marginTop: 20,
+        width: '90%'
+    },
+    ticketContainer: {
+        marginBottom: 20,
+        padding: 16,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    ticketTurnLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    ticketTurn: {
+        fontSize: 16,
+        color: 'black',
+        fontWeight: 'bold',
+    },
+    resultNumbersContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+    },
+    ball: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#D30010',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 5,
+    },
+    ballText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+    kyve: {
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginBottom: 10
+    },
+    vector: {
+        ...StyleSheet.absoluteFillObject,
+        resizeMode: 'cover', 
+        zIndex: -1, 
     },
 });
 
