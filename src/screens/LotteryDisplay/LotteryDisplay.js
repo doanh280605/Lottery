@@ -141,16 +141,16 @@ const LotteryDisplay = ({ lotteryData, loading, error }) => {
   }
 
   return (
-    <ScrollView
+    <View
       style={styles.resultsContainer}
-      contentContainerStyle={{ paddingBottom: 80 }}
     >
       {lotteryData.map((result, index) => (
         <View key={result.ticketTurn || index}>
           {index === 0 ? renderLatestResult(result) : renderOlderResult(result)}
         </View>
       ))}
-    </ScrollView>
+      <Text style={styles.more}>Xem thêm ></Text>
+    </View>
   );
 };
 
@@ -335,6 +335,12 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: '#E0E0E0',
+  },
+  more: {
+    fontSize: 18,
+    color: 'white',
+    marginTop: 20,
+    textAlign: 'center'
   }
 });
 

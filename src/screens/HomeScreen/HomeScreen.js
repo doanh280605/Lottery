@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import React, { useEffect, useState, useMemo } from "react";
+import { View, Text, StyleSheet, Image, Dimensions, ScrollView, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { XMLParser } from "fast-xml-parser";
+import Carousel from "react-native-reanimated-carousel";
 import 'react-native-gesture-handler';
+import axios from "axios";
 
 import DiceScreen from "../DiceScreen";
 import SettingScreen from "../SettingScreen";
@@ -17,56 +19,7 @@ import vector from '../../../assets/Vector_18.png'
 const Tab = createBottomTabNavigator();
 const size = 30;
 const RSS_URL = 'http://localhost:3000/api/rss';
-
-const AnimatedText = ({ value }) => {
-    const [displayValue, setDisplayValue] = useState(0);
-    const animationRef = useRef(null);
-
-    useEffect(() => {
-        if (!value) return;
-
-        // Convert string like "53,382,262,500đ" to number
-        const targetValue = parseInt(value.replace(/[^0-9]/g, ''));
-        const startValue = 0;
-        const duration = 3000; // 3 seconds animation
-        const framesPerSecond = 60;
-        const totalFrames = (duration / 1000) * framesPerSecond;
-        let frame = 0;
-
-        const animate = () => {
-            frame++;
-            const progress = frame / totalFrames;
-            const easedProgress = easeOutExpo(progress);
-            const current = Math.round(startValue + (targetValue - startValue) * easedProgress);
-
-            setDisplayValue(current);
-
-            if (frame < totalFrames) {
-                animationRef.current = requestAnimationFrame(animate);
-            }
-        };
-
-        // Easing function for smooth animation
-        const easeOutExpo = (x) => {
-            return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
-        };
-
-        animationRef.current = requestAnimationFrame(animate);
-
-        return () => {
-            if (animationRef.current) {
-                cancelAnimationFrame(animationRef.current);
-            }
-        };
-    }, [value]);
-
-    // Format the number with commas and đ symbol
-    const formattedValue = displayValue.toLocaleString('en-US') + 'đ';
-
-    return (
-        <Text style={styles.jackpotValue}>{formattedValue}</Text>
-    );
-};
+const deviceWidth = Dimensions.get('window').width;
 
 const HomeScreen = () => {
     const [jackpotValue, setJackpotValue] = useState('');
@@ -74,6 +27,7 @@ const HomeScreen = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [lotteryData, setLotteryData] = useState([]);
+    const [news, setNews] = useState([]);
 
     const fetchRSS = async () => {
         setLoading(true);
@@ -156,9 +110,64 @@ const HomeScreen = () => {
         return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
 
+    useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/vietlottnews');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setNews(data);
+            } catch (err) {
+                console.error('Detailed error:', {
+                    message: err.message,
+                    stack: err.stack,
+                });
+                setError(err.message);
+            }
+        };
+
+        fetchNews();
+    }, []);
+
+    const renderItem = ({ item }) => {
+        const isBase64 = item.imageUrl.startsWith('data:image/gif;base64');
+        const fallbackImageUrl = 'https://example.com/path/to/fallback-image.jpg';
+    
+        return (
+            <TouchableOpacity onPress={() => Linking.openURL(item.link)}>
+                <View style={styles.newsItem}>
+                    <Image 
+                        source={{ uri: isBase64 ? fallbackImageUrl : item.imageUrl }} 
+                        style={styles.newsImage} 
+                    />
+                    <View style={styles.newsTitleContainer}>
+                        <Text style={styles.newsTitle}>{item.title}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+    
+    const memoizedCarousel = useMemo(() => (
+        <Carousel
+            loop
+            data={news.slice(0, 6)}
+            renderItem={renderItem}
+            width={deviceWidth * 0.9}
+            height={deviceWidth}
+            autoPlay
+            autoPlayInterval={3000}
+        />
+    ), [news]);
+
+
     return (
         <View style={styles.container}>
-            <Image source={vector} style={styles.vector}/>
+            <Image source={vector} style={styles.vector} />
             <View style={styles.logoContainer}>
                 <Image source={logo} style={styles.logo} />
             </View>
@@ -166,16 +175,30 @@ const HomeScreen = () => {
             {/* Jackpot Value */}
             <View style={styles.contentContainer}>
                 <Text style={styles.label}>Jackpot</Text>
-                <AnimatedText value={jackpotValue} style={styles.jackpotValue} />
+                <Text style={styles.jackpotValue}>{jackpotValue} </Text>
                 <Text style={styles.description}>
                     (Jackpot Mega 6/45 mở thưởng {jackpotDate})
                 </Text>
             </View>
-            <LotteryDisplay 
-                lotteryData={lotteryData}
-                loading={loading}
-                error={error}
-            />
+
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                <LotteryDisplay
+                    lotteryData={lotteryData}
+                    loading={loading}
+                    error={error}
+                />
+
+                <View style={styles.divider} />
+                <Text style={styles.newsHeader}>Tin tức mới</Text>
+                
+                <View style={styles.newsContainer}>
+                    {error ? (
+                        <Text style={styles.errorText}>Error: {error}</Text>
+                    ) : (
+                        memoizedCarousel
+                    )}
+                </View>
+            </ScrollView>
         </View>
     );
 };
@@ -375,9 +398,63 @@ const styles = StyleSheet.create({
     },
     vector: {
         ...StyleSheet.absoluteFillObject,
-        resizeMode: 'cover', 
-        zIndex: -1, 
+        resizeMode: 'cover',
+        zIndex: -1,
     },
+    newsContainer: {
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    newsItem: {
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 2,
+        alignItems: 'center',
+    },
+    newsImage: {
+        width: '100%',
+        height: 220,
+        borderRadius: 15,
+        resizeMode: 'cover',
+        overflow: 'hidden'
+    },
+    newsTitleContainer: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: 'rgba(128, 128, 128, 0.7)',
+        paddingVertical: 5,
+        alignItems: 'center',
+        borderBottomRightRadius: 15,
+        borderBottomLeftRadius: 15
+    },
+    newsTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+    },
+    divider: {
+        height: 3,
+        backgroundColor: '#E0E0E0', 
+        marginVertical: 20, 
+        width: '100%'
+    },
+    newsHeader: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'left',
+        marginLeft: 4
+    },
+    scrollViewContent: {
+        paddingBottom: 0,
+        flexGrow: 1
+    }
 });
 
 export default MyTabs;
