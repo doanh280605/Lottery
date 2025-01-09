@@ -245,7 +245,12 @@ function MyTabs() {
                             />
                         </View>
                     ),
-                    tabBarLabel: () => null
+                    tabBarLabel: () => null,
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#A80D05'
+                    },
+                    headerTintColor: 'white'
                 }}
             />
             <Tab.Screen

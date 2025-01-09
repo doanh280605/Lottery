@@ -19,8 +19,9 @@ const LotteryDisplay = ({ lotteryData, loading, error }) => {
             jackpotValue: result.jackpotValue,
             drawDate: result.drawDate,
           },
+          lotteryData: lotteryData
         })
-      }
+        }
         style={styles.latestTicketContainer}
       >
         <View style={styles.selector}>
@@ -120,30 +121,46 @@ const LotteryDisplay = ({ lotteryData, loading, error }) => {
   };
 
 
-  const renderOlderResult = (result) => (
-    <View style={styles.olderTicketContainer}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <View style={styles.kyve}>
-          <Text>Kỳ quay </Text>
-          <Text style={styles.ticketTurn}>#{result.ticketTurn}</Text>
-          <Text> - {result.drawDate}</Text>
-        </View>
-        <Text style={{ marginRight: 20, color: 'red' }}>></Text>
-      </View>
-
-      <View style={styles.divider} />
-
-      <View style={styles.olderNumbersContainer}>
-        {result.numbers.map((number, index) => (
-          <View key={index} style={styles.olderBall}>
-            <Text style={styles.olderBallText}>
-              {number.toString().padStart(2, '0')}
-            </Text>
+  const renderOlderResult = (result) => {
+    const navigation = useNavigation();
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('draw-detail', {
+          ticketTurn: result.ticketTurn,
+          result: {
+            numbers: result.numbers,
+            ticketTurn: result.ticketTurn,
+            jackpotValue: result.jackpotValue,
+            drawDate: result.drawDate,
+          },
+          lotteryData: lotteryData
+        })
+        }
+        style={styles.olderTicketContainer}
+      >
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={styles.kyve}>
+            <Text>Kỳ quay </Text>
+            <Text style={styles.ticketTurn}>#{result.ticketTurn}</Text>
+            <Text> - {result.drawDate}</Text>
           </View>
-        ))}
-      </View>
-    </View>
-  );
+          <Text style={{ marginRight: 20, color: 'red' }}>></Text>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.olderNumbersContainer}>
+          {result.numbers.map((number, index) => (
+            <View key={index} style={styles.olderBall}>
+              <Text style={styles.olderBallText}>
+                {number.toString().padStart(2, '0')}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </TouchableOpacity>
+    )
+  };
 
   if (loading) {
     return (

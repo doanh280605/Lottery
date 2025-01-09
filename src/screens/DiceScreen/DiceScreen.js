@@ -1,7 +1,19 @@
-import React from 'react';
+import React, {useLayoutEffect} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const DiceScreen = () => {
+    const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Chọn số may mắn',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+                fontSize: 18
+            },
+        });
+    }, [navigation]);
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Dice Screen</Text>

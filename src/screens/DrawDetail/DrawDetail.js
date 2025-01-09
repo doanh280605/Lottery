@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import ticket from '../../../assets/ticket.png'
@@ -12,18 +12,18 @@ const DrawDetailScreen = () => {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const { ticketTurn, numbers, jackpotValue, drawDate } = route.params;
-    const { result } = route.params;
+    const { result, lotteryData } = route.params;
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: `Kết quả quay kỳ #${ticketTurn}`,
+            title: `Kết quả quay kỳ #${result.ticketTurn}`,
             headerTitleStyle: {
                 fontWeight: 'bold',
                 fontSize: 18
             },
         });
-    }, [navigation, ticketTurn]);
+    }, [navigation, result.ticketTurn]);
+
 
     return (
         <ScrollView style={styles.scrollView}>
@@ -134,17 +134,62 @@ const DrawDetailScreen = () => {
                         top: '85%',
                         width: '110%',
                         alignSelf: 'center'
-                    }}/>
+                    }} />
                     <View style={{
-                        flexDirection: 'row', 
+                        flexDirection: 'row',
                         justifyContent: 'space-between',
                         width: '100%',
                         top: '27%'
                     }}>
                         <Text>Trùng khớp: </Text>
-                        <Text>Xác suất: <Text style={{fontWeight: 'bold', color: 'red'}}>0%</Text></Text>
+                        <Text>Xác suất: <Text style={{ fontWeight: 'bold', color: 'red' }}>0%</Text></Text>
                     </View>
                 </View>
+                <View style={{
+                    backgroundColor: '#FF883A',
+                    marginTop: 20,
+                    padding: 10,
+                    width: '110%',
+                    alignItems: 'center'
+                }}>
+                    <Text style={{
+                        fontSize: 18,
+                        fontWeight: 'bold'
+                    }}>CÁC KỲ QUAY KHÁC</Text>
+                </View>
+                {lotteryData
+                    .filter(ticket => ticket.ticketTurn !== result.ticketTurn)
+                    .sort((a, b) => b.ticketTurn - a.ticketTurn)
+                    .map(ticket => (
+                        <TouchableOpacity
+                            key={ticket.ticketTurn}
+                            onPress={() => navigation.replace('draw-detail', {
+                                result: ticket,
+                                lotteryData: lotteryData
+                            })}
+                        >
+                            <View style={styles.olderTicketContainer}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <View style={styles.kyve}>
+                                        <Text>Kỳ quay </Text>
+                                        <Text style={styles.ticketTurn}>#{ticket.ticketTurn}</Text>
+                                        <Text> - {ticket.drawDate}</Text>
+                                    </View>
+                                    <Text style={{ marginRight: 20, color: 'red' }}>></Text>
+                                </View>
+                                <View style={styles.divider} />
+                                <View style={styles.olderNumbersContainer}>
+                                    {ticket.numbers.map((number, index) => (
+                                        <View key={index} style={styles.olderBall}>
+                                            <Text style={styles.olderBallText}>
+                                                {number.toString().padStart(2, '0')}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    ))}
             </View>
         </ScrollView>
     );
@@ -293,7 +338,48 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 18,
         fontWeight: 'bold',
-    }
+    },
+    olderTicketContainer: {
+        backgroundColor: 'white',
+        marginVertical: 10,
+        borderRadius: 15,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3.84,
+        width: '95%',
+        marginTop: 20
+    },
+    kyve: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+        paddingVertical: 15
+    },
+    ticketTurn: {
+        fontWeight: 'bold',
+        color: 'red'
+    },
+    olderNumbersContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 10
+    },
+    olderBall: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#FFA500',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5,
+    },
+    olderBallText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
 
 
