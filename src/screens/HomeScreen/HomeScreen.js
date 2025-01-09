@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { XMLParser } from "fast-xml-parser";
@@ -20,6 +20,46 @@ const Tab = createBottomTabNavigator();
 const size = 30;
 const RSS_URL = 'http://localhost:3000/api/rss';
 const deviceWidth = Dimensions.get('window').width;
+
+const AnimatedText = ({ value }) => {
+    const [displayValue, setDisplayValue] = useState(0);
+    const animationRef = useRef(null);
+    useEffect(() => {
+        if (!value) return;
+        // Convert string like "53,382,262,500đ" to number
+        const targetValue = parseInt(value.replace(/[^0-9]/g, ''));
+        const startValue = 0;
+        const duration = 2000; // 2 seconds animation
+        const framesPerSecond = 60;
+        const totalFrames = (duration / 1000) * framesPerSecond;
+        let frame = 0;
+        const animate = () => {
+            frame++;
+            const progress = frame / totalFrames;
+            const easedProgress = easeOutExpo(progress);
+            const current = Math.round(startValue + (targetValue - startValue) * easedProgress);
+            setDisplayValue(current);
+            if (frame < totalFrames) {
+                animationRef.current = requestAnimationFrame(animate);
+            }
+        };
+        // Easing function for smooth animation
+        const easeOutExpo = (x) => {
+            return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+        };
+        animationRef.current = requestAnimationFrame(animate);
+        return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+            }
+        };
+    }, [value]);
+    // Format the number with commas and đ symbol
+    const formattedValue = displayValue.toLocaleString('en-US') + 'đ';
+    return (
+        <Text style={styles.jackpotValue}>{formattedValue}</Text>
+    );
+};
 
 const HomeScreen = () => {
     const [jackpotValue, setJackpotValue] = useState('');
@@ -175,7 +215,7 @@ const HomeScreen = () => {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.contentContainer}>
                     <Text style={styles.label}>Jackpot</Text>
-                    <Text style={styles.jackpotValue}>{jackpotValue} </Text>
+                    <AnimatedText value={jackpotValue} style={styles.jackpotValue} />
                     <Text style={styles.description}>
                         (Jackpot Mega 6/45 mở thưởng {jackpotDate})
                     </Text>

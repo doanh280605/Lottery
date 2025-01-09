@@ -1,9 +1,69 @@
-import React, {useLayoutEffect} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useLayoutEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Button } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
+import vietlott from '../../../assets/vietloff.png'
+import megaBig from '../../../assets/megaBigger.png'
+import max from '../../../assets/max.png'
+import power from '../../../assets/power.png'
+import megaSmall from '../../../assets/mega.png'
+import vietlottBig from '../../../assets/vietlottbig.png'
+import maxBig from '../../../assets/maxBig.png'
+import powerBig from '../../../assets/powerBig.png'
+
 
 const DiceScreen = () => {
     const navigation = useNavigation();
+
+    const ticketOptions = [
+        { id: 'vietlott', source: vietlott, highResSource: vietlottBig },
+        { id: 'megaSmall', source: megaSmall, highResSource: megaBig },
+        { id: 'max', source: max, highResSource: maxBig },
+        { id: 'power', source: power, highResSource: powerBig },
+    ];
+
+    const [selectedTicket, setSelectedTicket] = useState(ticketOptions[0]?.id);
+
+    const handleSelect = (id) => {
+        setSelectedTicket(id);
+    };
+
+    // State to store numbers
+    const [numbers, setNumbers] = useState(Array(6).fill(''));
+    const [isNumberEntered, setIsNumberEntered] = useState(false);
+
+    const handleInputChange = (text, index) => {
+        const updateNumbers = [...numbers];
+        updateNumbers[index] = text;
+        setNumbers(updateNumbers);
+
+        setIsNumberEntered(updateNumbers.some(num => num !== ''));
+    }
+
+    // Handle form submission
+    const handleSubmit = async () => {
+        const formattedNumbers = numbers.filter(num => num !== '').map(num => parseInt(num, 10));
+
+        if(formattedNumbers.length === 0){
+            Alert.alert('Vui lòng nhập ít nhất 1 số');
+            return;
+        }
+
+        try {
+            const response = await fetch('', {
+                method: 'POST', 
+                header: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({numbers: formattedNumbers}),
+            });
+            const data = await response.json();
+            Alert.alert('Calculation result', `Result: ${data.result}`);
+        } catch (error) {
+            console.error('Error: ', error);
+            Alert.alert('Error', 'Failed to submit data')
+        }
+    }
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -16,7 +76,65 @@ const DiceScreen = () => {
     }, [navigation]);
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Dice Screen</Text>
+            <View style={styles.chooseNumberContainer}>
+                <Text style={styles.title}>Chọn loại vé</Text>
+                <View style={styles.selector}>
+                    {ticketOptions.map((ticket) => (
+                        <TouchableOpacity
+                            key={ticket.id}
+                            onPress={() => handleSelect(ticket.id)}
+                            style={[
+                                styles.imageWrapper,
+                                selectedTicket === ticket.id && styles.selectedImageWrapper,
+                                (ticket.id === 'vietlott' || ticket.id === 'power') && { marginTop: 3 },
+                            ]}
+                        >
+                            <Image source={ticket.source} style={styles.icon} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
+                <View style={styles.divider} />
+                {selectedTicket && (
+                    <View style={styles.selectedTicketContainer}>
+                        <Image
+                            source={
+                                ticketOptions.find((ticket) => ticket.id === selectedTicket)?.highResSource
+                            }
+                            style={styles.selectedTicketImage}
+                        />
+                    </View>
+                )}
+                <Text style={{
+                    textAlign: 'center',
+                    fontSize: 16, 
+                    fontWeight: 'bold',
+                    marginTop: 15
+                }}>Số của bạn chọn
+                </Text>
+                <View style={styles.numberInputContainer}>
+                    {Array.from({ length: 6 }).map((_, index) => (
+                        <TextInput
+                            key={index}
+                            style={styles.numberInput}
+                            keyboardType="numeric"
+                            maxLength={2} 
+                            textAlign="center"
+                            value={numbers[index]}
+                            onChangeText={(text) => handleInputChange(text, index)}
+                        />
+                    ))}
+                </View>
+                <TouchableOpacity 
+                    onPress={handleSubmit} 
+                    style={[
+                        styles.button,
+                        { backgroundColor: isNumberEntered ? '#D9112A' : '#B0B0B0' },
+                    ]}
+                    disabled={!isNumberEntered}
+                >
+                    <Text style={styles.buttonText}>XÁC NHẬN</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -26,10 +144,84 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'white'
     },
     text: {
         fontSize: 24,
         fontWeight: 'bold',
+    },
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 8
+    },
+    chooseNumberContainer: {
+        width: '95%',
+        height: 476,
+        backgroundColor: '#FEECED',
+        bottom: '17%',
+        borderRadius: 15
+    },
+    selector: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 35,
+        paddingVertical: 10,
+        alignContent: 'center',
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#FFDADF',
+        position: 'absolute',
+        top: '20%',
+        width: '91%',
+        alignSelf: 'center'
+    },
+    imageWrapper: {
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+    selectedImageWrapper: {
+        backgroundColor: '#FFC91F',
+    },
+    selectedTicketContainer: {
+        alignItems: 'center',
+        marginTop: 15,
+    },
+    numberInputContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginTop: 15,
+    },
+    numberInput: {
+        width: 50,
+        height: 50,
+        borderRadius: 25, 
+        borderWidth: 2,
+        borderColor: 'red',
+        textAlign: 'center',
+        fontSize: 18,
+        color: '#000',
+        backgroundColor: '#fff',
+        fontWeight: 'bold'
+    },
+    button: {
+        position: 'absolute',
+        top:'123%',
+        left: '2.5%',
+        right: '2.5%',
+        borderRadius: 15,
+        paddingVertical: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '95%'
+    },
+    buttonText: {
+        color: '#fff',
+        fontWeight: 'bold', 
+        fontSize: 20,
     },
 });
 

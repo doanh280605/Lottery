@@ -164,8 +164,17 @@ const LotteryDisplay = ({ lotteryData, loading, error }) => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+      <View>
+        <View style={styles.latestTicketContainer}>
+          <View style={styles.loadingContainer}>
+            <Text>Loading...</Text>
+          </View>
+        </View>
+        <View style={styles.olderTicketContainer}>
+          <View style={styles.loadingContainer}>
+            <Text>Loading...</Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -228,6 +237,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     overflow: 'hidden',
+    height: 478
   },
   headerContainer: {
     backgroundColor: '#D30010',
@@ -340,6 +350,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 10,
     elevation: 2,
+    height: 120
   },
   kyve: {
     flexDirection: 'row',
