@@ -1,113 +1,134 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import vietlott from '../../../assets/vietloff.png'
 import mega from '../../../assets/mega.png'
 import max from '../../../assets/max.png'
 import power from '../../../assets/power.png'
 
 const LotteryDisplay = ({ lotteryData, loading, error }) => {
-  const renderLatestResult = (result) => (
-    <View style={styles.latestTicketContainer}>
-      <View style={styles.selector}>
-        <Image source={vietlott} style={[styles.icon, {marginTop: 3}]}/>
-        <Image source={mega} style={styles.icon}/>
-        <Image source={max} style={styles.icon}/>
-        <Image source={power} style={[styles.icon, {marginTop: 3}]}/>
-      </View>
-
-      <View style={styles.divider} />
-
-      <View style={styles.infoContainer}>
-        <Text style={[{fontSize: 20, 
-                       textAlign: 'center', 
-                       fontWeight: 'bold'}]}
-                      >Kết quả sổ xố Vietlott MEGA 6/45 {result.drawDate}</Text>
-      </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>SỐ TRÚNG THƯỞNG</Text>
-      </View>
-
-      <View style={styles.drawInfo}>
-        <Text style={styles.drawDetails}>
-          Kỳ vé: #{result.ticketTurn} | Ngày quay thưởng {result.drawDate}
-        </Text>
-      </View>
-
-      <View style={styles.latestNumbersContainer}>
-        {result.numbers.map((number, index) => (
-          <View key={index} style={styles.latestBall}>
-            <Text style={styles.latestBallText}>
-              {number.toString().padStart(2, '0')}
-            </Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.prizeTable}>
-        <View style={styles.prizeHeader}>
-          <Text style={[styles.prizeHeaderText, { flex: 3, textAlign: 'left' }]}>Giải thưởng</Text>
-          <Text style={[styles.prizeHeaderText, { flex: 3, textAlign: 'left', paddingLeft: 15 }]}>Trùng khớp</Text>
-          <Text style={[styles.prizeHeaderText, { flex: 4, textAlign: 'right' }]}>Giá trị giải</Text>
+  const renderLatestResult = (result) => {
+    const navigation = useNavigation();
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('draw-detail', {
+          ticketTurn: result.ticketTurn,
+          result: {
+            numbers: result.numbers,
+            ticketTurn: result.ticketTurn,
+            jackpotValue: result.jackpotValue,
+            drawDate: result.drawDate,
+          },
+        })
+      }
+        style={styles.latestTicketContainer}
+      >
+        <View style={styles.selector}>
+          <Image source={vietlott} style={[styles.icon, { marginTop: 3 }]} />
+          <Image source={mega} style={styles.icon} />
+          <Image source={max} style={styles.icon} />
+          <Image source={power} style={[styles.icon, { marginTop: 3 }]} />
         </View>
 
-        <View style={[styles.prizeRow, styles.whiteRow]}>
-          <Text style={[styles.prizeType, { flex: 2 }]}>Jackpot</Text>
-          <View style={[styles.matchDotsContainer, { flex: 3 }]}>
-            <View style={styles.matchDots}>
-              {[...Array(6)].map((_, i) => (
-                <View key={i} style={[styles.dot, i === 5 ? styles.dotMatched : styles.dotUnmatched]} />
-              ))}
+        <View style={styles.divider} />
+
+        <View style={styles.infoContainer}>
+          <Text style={[{
+            fontSize: 20,
+            textAlign: 'center',
+            fontWeight: 'bold'
+          }]}
+          >Kết quả sổ xố Vietlott MEGA 6/45 {result.drawDate}</Text>
+        </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>SỐ TRÚNG THƯỞNG</Text>
+        </View>
+
+        <View style={styles.drawInfo}>
+          <Text style={styles.drawDetails}>
+            Kỳ vé: #{result.ticketTurn} | Ngày quay thưởng {result.drawDate}
+          </Text>
+        </View>
+
+        <View style={styles.latestNumbersContainer}>
+          {result.numbers.map((number, index) => (
+            <View key={index} style={styles.latestBall}>
+              <Text style={styles.latestBallText}>
+                {number.toString().padStart(2, '0')}
+              </Text>
             </View>
-          </View>
-          <Text style={[styles.prizeValue, { flex: 4 }]}>{result.jackpotValue}</Text>
+          ))}
         </View>
 
-        <View style={[styles.prizeRow, styles.pinkRow]}>
-          <Text style={[styles.prizeType, { flex: 2 }]}>Giải nhất</Text>
-          <View style={[styles.matchDotsContainer, { flex: 3 }]}>
-            <View style={styles.matchDots}>
-              {[...Array(5)].map((_, i) => (
-                <View key={i} style={[styles.dot, i >= 3 ? styles.dotMatched : styles.dotUnmatched]} />
-              ))}
-            </View>
+        <View style={styles.prizeTable}>
+          <View style={styles.prizeHeader}>
+            <Text style={[styles.prizeHeaderText, { flex: 3, textAlign: 'left' }]}>Giải thưởng</Text>
+            <Text style={[styles.prizeHeaderText, { flex: 3, textAlign: 'left', paddingLeft: 15 }]}>Trùng khớp</Text>
+            <Text style={[styles.prizeHeaderText, { flex: 4, textAlign: 'right' }]}>Giá trị giải</Text>
           </View>
-          <Text style={[styles.prizeValue, { flex: 4 }]}>10,000,000đ</Text>
-        </View>
 
-        <View style={[styles.prizeRow, styles.whiteRow]}>
-          <Text style={[styles.prizeType, { flex: 2 }]}>Giải nhì</Text>
-          <View style={[styles.matchDotsContainer, { flex: 3 }]}>
-            <View style={styles.matchDots}>
-              {[...Array(4)].map((_, i) => (
-                <View key={i} style={[styles.dot, styles.dotUnmatched]} />
-              ))}
+          <View style={[styles.prizeRow, styles.whiteRow]}>
+            <Text style={[styles.prizeType, { flex: 2 }]}>Jackpot</Text>
+            <View style={[styles.matchDotsContainer, { flex: 3 }]}>
+              <View style={styles.matchDots}>
+                {[...Array(6)].map((_, i) => (
+                  <View key={i} style={[styles.dot, i === 5 ? styles.dotMatched : styles.dotUnmatched]} />
+                ))}
+              </View>
             </View>
+            <Text style={[styles.prizeValue, { flex: 4 }]}>{result.jackpotValue}</Text>
           </View>
-          <Text style={[styles.prizeValue, { flex: 4 }]}>300,000đ</Text>
-        </View>
 
-        <View style={[styles.prizeRow, styles.pinkRow]}>
-          <Text style={[styles.prizeType, { flex: 2 }]}>Giải ba</Text>
-          <View style={[styles.matchDotsContainer, { flex: 3 }]}>
-            <View style={styles.matchDots}>
-              {[...Array(3)].map((_, i) => (
-                <View key={i} style={[styles.dot, styles.dotUnmatched]} />
-              ))}
+          <View style={[styles.prizeRow, styles.pinkRow]}>
+            <Text style={[styles.prizeType, { flex: 2 }]}>Giải nhất</Text>
+            <View style={[styles.matchDotsContainer, { flex: 3 }]}>
+              <View style={styles.matchDots}>
+                {[...Array(5)].map((_, i) => (
+                  <View key={i} style={[styles.dot, i >= 3 ? styles.dotMatched : styles.dotUnmatched]} />
+                ))}
+              </View>
             </View>
+            <Text style={[styles.prizeValue, { flex: 4 }]}>10,000,000đ</Text>
           </View>
-          <Text style={[styles.prizeValue, { flex: 4 }]}>30,000đ</Text>
+
+          <View style={[styles.prizeRow, styles.whiteRow]}>
+            <Text style={[styles.prizeType, { flex: 2 }]}>Giải nhì</Text>
+            <View style={[styles.matchDotsContainer, { flex: 3 }]}>
+              <View style={styles.matchDots}>
+                {[...Array(4)].map((_, i) => (
+                  <View key={i} style={[styles.dot, styles.dotUnmatched]} />
+                ))}
+              </View>
+            </View>
+            <Text style={[styles.prizeValue, { flex: 4 }]}>300,000đ</Text>
+          </View>
+
+          <View style={[styles.prizeRow, styles.pinkRow]}>
+            <Text style={[styles.prizeType, { flex: 2 }]}>Giải ba</Text>
+            <View style={[styles.matchDotsContainer, { flex: 3 }]}>
+              <View style={styles.matchDots}>
+                {[...Array(3)].map((_, i) => (
+                  <View key={i} style={[styles.dot, styles.dotUnmatched]} />
+                ))}
+              </View>
+            </View>
+            <Text style={[styles.prizeValue, { flex: 4 }]}>30,000đ</Text>
+          </View>
         </View>
-      </View>
-    </View>
-  );
+      </TouchableOpacity>
+    )
+  };
 
 
   const renderOlderResult = (result) => (
     <View style={styles.olderTicketContainer}>
-      <View style={styles.kyve}>
-        <Text>Kỳ quay </Text>
-        <Text style={styles.ticketTurn}>#{result.ticketTurn}</Text>
-        <Text> - {result.drawDate}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={styles.kyve}>
+          <Text>Kỳ quay </Text>
+          <Text style={styles.ticketTurn}>#{result.ticketTurn}</Text>
+          <Text> - {result.drawDate}</Text>
+        </View>
+        <Text style={{ marginRight: 20, color: 'red' }}>></Text>
       </View>
 
       <View style={styles.divider} />
@@ -201,7 +222,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  infoContainer:{
+  infoContainer: {
     padding: 15,
     flex: 1,
     alignItems: 'center'

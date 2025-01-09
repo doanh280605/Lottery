@@ -172,16 +172,14 @@ const HomeScreen = () => {
                 <Image source={logo} style={styles.logo} />
             </View>
 
-            {/* Jackpot Value */}
-            <View style={styles.contentContainer}>
-                <Text style={styles.label}>Jackpot</Text>
-                <Text style={styles.jackpotValue}>{jackpotValue} </Text>
-                <Text style={styles.description}>
-                    (Jackpot Mega 6/45 mở thưởng {jackpotDate})
-                </Text>
-            </View>
-
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                <View style={styles.contentContainer}>
+                    <Text style={styles.label}>Jackpot</Text>
+                    <Text style={styles.jackpotValue}>{jackpotValue} </Text>
+                    <Text style={styles.description}>
+                        (Jackpot Mega 6/45 mở thưởng {jackpotDate})
+                    </Text>
+                </View>
                 <LotteryDisplay
                     lotteryData={lotteryData}
                     loading={loading}
@@ -317,7 +315,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
         marginTop: 20,
-        width: '90%',
+        width: '95%',
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',

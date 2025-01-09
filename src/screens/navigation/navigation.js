@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import SplashScreen from "../SplashScreen";
 import HomeScreen from "../HomeScreen";
+import DrawDetail from "../DrawDetail";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -12,6 +13,17 @@ export default function Navigation() {
             <Stack.Navigator initialRouteName='splash' screenOptions={{ headerShown: false }}>
                 <Stack.Screen name='home' component={HomeScreen} />
                 <Stack.Screen name='splash' component={SplashScreen} />
+                <Stack.Screen
+                    name="draw-detail"
+                    component={DrawDetail}
+                    options={{ headerShown: true,
+                               headerBackTitleVisible: false,
+                               headerStyle: {
+                                backgroundColor: '#A80D05'
+                               },
+                               headerTintColor: 'white'
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     )
