@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   drawDetails: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     textAlign: 'right'
   },

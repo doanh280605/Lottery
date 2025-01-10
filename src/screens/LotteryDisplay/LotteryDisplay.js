@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingHorizontal: 80,
     top: '2%'
   },
@@ -127,6 +128,9 @@ const styles = StyleSheet.create({
   },
   activeSelection: {
     backgroundColor: '#FFC91F',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 20
   },
   latestTicketContainer: {
     backgroundColor: 'transparent',
