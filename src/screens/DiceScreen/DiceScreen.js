@@ -16,9 +16,7 @@ const DiceScreen = () => {
     const navigation = useNavigation();
 
     const ticketOptions = [
-        { id: 'vietlott', source: vietlott, highResSource: vietlottBig },
         { id: 'megaSmall', source: megaSmall, highResSource: megaBig },
-        { id: 'max', source: max, highResSource: maxBig },
         { id: 'power', source: power, highResSource: powerBig },
     ];
 
@@ -55,7 +53,10 @@ const DiceScreen = () => {
                 header: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({numbers: formattedNumbers}),
+                body: JSON.stringify({
+                    ticketType: selectedTicket,
+                    numbers: formattedNumbers
+                }),
             });
             const data = await response.json();
             Alert.alert('Calculation result', `Result: ${data.result}`);
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     selector: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 35,
+        paddingHorizontal: 80,
         paddingVertical: 10,
         alignContent: 'center',
     },

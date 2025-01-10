@@ -104,7 +104,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         fetchRSS();
-        const intervalId = setInterval(fetchRSS, 300000); // Refresh every 5 minutes
+        const intervalId = setInterval(fetchRSS, 86400000); // Refresh every 5 minutes
         return () => clearInterval(intervalId);
     }, []);
 
@@ -146,7 +146,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         fetchLotteryResults(); // Initial fetch on component mount
-        const intervalId = setInterval(fetchLotteryResults, 300000); // Refetch every 5 minutes
+        const intervalId = setInterval(fetchLotteryResults, 86400000); // Refetch every 5 minutes
         return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
 
