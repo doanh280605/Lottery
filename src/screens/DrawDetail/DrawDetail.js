@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFDADF',
         position: 'absolute',
         top: '40%',
-        width: '91%',
+        width: '100%',
         alignSelf: 'center'
     },
     prizeTable: {
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 3.84,
-        width: '95%',
+        width: 365,
         marginTop: 20
     },
     kyve: {

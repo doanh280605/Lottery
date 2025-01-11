@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     top: '2%',
     borderBottomWidth: 4,
     borderBottomColor: '#E0E0E0',
-    width: 350
+    width: 350,
   },
   selectionIndicator: {
     borderRadius: 10,

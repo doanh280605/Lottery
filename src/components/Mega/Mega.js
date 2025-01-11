@@ -67,7 +67,7 @@ const Mega = () => {
               height: 420,
               bottom: 10,
               width: 350,
-              justifyContent: 'center'
+              justifyContent: 'center',
         }}>
           <ActivityIndicator size="large" color="black" />
         </View>
