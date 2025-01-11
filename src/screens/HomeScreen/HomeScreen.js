@@ -66,7 +66,6 @@ const HomeScreen = () => {
     const [jackpotDate, setJackpotDate] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [lotteryData, setLotteryData] = useState([]);
     const [news, setNews] = useState([]);
 
     const fetchRSS = async () => {
@@ -106,48 +105,6 @@ const HomeScreen = () => {
         fetchRSS();
         const intervalId = setInterval(fetchRSS, 86400000); // Refresh every 5 minutes
         return () => clearInterval(intervalId);
-    }, []);
-
-    const fetchLotteryResults = async () => {
-        setLoading(true); // Start loading indicator
-        try {
-            const response = await fetch('http://localhost:3000/api/lottery-result');
-            const responseData = await response.json(); // Parse JSON response
-
-            if (responseData && Array.isArray(responseData)) {
-                // Map backend response to desired frontend structure
-                const lotteryResults = responseData.map((item) => {
-                    const numbers = Array.isArray(item.resultNumbers) ? item.resultNumbers : [];
-                    const ticketTurn = item.ticketTurn || 'N/A';
-                    const jackpotValue = item.jackpotValue || 'N/A';
-                    const drawDate = item.drawDate || 'N/A';
-
-                    return {
-                        numbers,
-                        ticketTurn,
-                        jackpotValue,
-                        drawDate,
-                    };
-                });
-
-                setLotteryData(lotteryResults); // Update state with processed data
-                setError(null); // Clear any existing error
-            } else {
-                console.error('No valid lottery data received.');
-                setError('No lottery data available'); // Display error to user
-            }
-        } catch (error) {
-            console.error('Error fetching lottery results:', error);
-            setError('Failed to fetch lottery results. Please try again later.');
-        } finally {
-            setLoading(false); // Stop loading indicator
-        }
-    };
-
-    useEffect(() => {
-        fetchLotteryResults(); // Initial fetch on component mount
-        const intervalId = setInterval(fetchLotteryResults, 86400000); // Refetch every 5 minutes
-        return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
 
     useEffect(() => {
@@ -220,11 +177,7 @@ const HomeScreen = () => {
                         (Jackpot Mega 6/45 mở thưởng {jackpotDate})
                     </Text>
                 </View>
-                <LotteryDisplay
-                    lotteryData={lotteryData}
-                    loading={loading}
-                    error={error}
-                />
+                <LotteryDisplay/>
 
                 <View style={styles.divider} />
                 <Text style={styles.newsHeader}>Tin tức mới</Text>
@@ -365,7 +318,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 5,
-        borderColor: '#E09D00'
+        borderColor: '#E09D00',
+        width: 350
     },
     label: {
         fontSize: 20,
@@ -379,11 +333,6 @@ const styles = StyleSheet.create({
         color: '#c00',
         textAlign: 'center',
         paddingVertical: 10,
-    },
-    loading: {
-        textAlign: 'center',
-        color: '#666',
-        fontSize: 16,
     },
     error: {
         color: 'red',

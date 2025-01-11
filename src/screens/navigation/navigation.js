@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import SplashScreen from "../SplashScreen";
 import HomeScreen from "../HomeScreen";
 import DrawDetail from "../DrawDetail";
+import PowerDetail from "../PowerDetail";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -16,6 +17,17 @@ export default function Navigation() {
                 <Stack.Screen
                     name="draw-detail"
                     component={DrawDetail}
+                    options={{ headerShown: true,
+                               headerBackTitleVisible: false,
+                               headerStyle: {
+                                backgroundColor: '#A80D05'
+                               },
+                               headerTintColor: 'white'
+                    }}
+                />
+                <Stack.Screen
+                    name="power-detail"
+                    component={PowerDetail}
                     options={{ headerShown: true,
                                headerBackTitleVisible: false,
                                headerStyle: {

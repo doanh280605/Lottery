@@ -7,37 +7,12 @@ import Power from '../../components/Power';
 import mega from '../../../assets/mega.png'
 import power from '../../../assets/power.png'
 
-const LotteryDisplay = ({ lotteryData, loading, error }) => {
+const LotteryDisplay = () => {
   const [selectedTicket, setSelectedTicket] = useState('mega');
 
   const handleSelect = (ticket) => {
     setSelectedTicket(ticket);
   };
-
-  if (loading) {
-    return (
-      <View>
-        <View style={styles.latestTicketContainer}>
-          <View style={styles.loadingContainer}>
-            <Text>Loading...</Text>
-          </View>
-        </View>
-        <View style={styles.olderTicketContainer}>
-          <View style={styles.loadingContainer}>
-            <Text>Loading...</Text>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.resultsContainer}>
@@ -66,25 +41,15 @@ const LotteryDisplay = ({ lotteryData, loading, error }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.divider} />
-
         {/* Mega or Power Content */}
         {selectedTicket === 'mega' ? (
-          lotteryData && lotteryData.length > 0 ? (
-            <Mega results={lotteryData} />
-          ) : (
-            <Text>No Mega results available.</Text>
-          )
+          <Mega />
         ) : (
-          lotteryData && lotteryData.length > 0 ? (
-            <Power results={lotteryData} />
-          ) : (
-            <Text>No Power results available.</Text>
-          )
+          <Power />
         )}
+
       </View>
 
-      {/* "Xem thêm" Text */}
       <Text style={styles.more}>Xem thêm ></Text>
     </View>
 
@@ -95,6 +60,13 @@ const styles = StyleSheet.create({
   resultsContainer: {
     flex: 1,
     paddingHorizontal: 10,
+  },
+  olderTicketContainer: {
+    backgroundColor: 'white',
+    marginVertical: 10,
+    borderRadius: 10,
+    elevation: 2,
+    height: 120
   },
   loadingContainer: {
     flex: 1,
@@ -120,11 +92,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingHorizontal: 80,
-    top: '2%'
+    top: '2%',
+    borderBottomWidth: 4,
+    borderBottomColor: '#E0E0E0',
+    width: 350
   },
   selectionIndicator: {
     borderRadius: 10,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   activeSelection: {
     backgroundColor: '#FFC91F',
@@ -134,11 +109,6 @@ const styles = StyleSheet.create({
   },
   latestTicketContainer: {
     backgroundColor: 'transparent',
-  },
-  divider: {
-    height: 3,
-    backgroundColor: '#E0E0E0',
-    top: '0.9%',
   },
   more: {
     fontSize: 18,
