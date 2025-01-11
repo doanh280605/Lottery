@@ -78,7 +78,7 @@ const Power = ({ }) => {
                     elevation: 3,
                     overflow: 'hidden',
                     height: 458,
-                    bottom: 10,
+                    bottom: 8,
                     width: 350,
                     justifyContent: 'center',
               }}>

@@ -65,7 +65,7 @@ const Mega = () => {
               elevation: 3,
               overflow: 'hidden',
               height: 420,
-              bottom: 10,
+              bottom: 9,
               width: 350,
               justifyContent: 'center',
         }}>
