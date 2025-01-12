@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 const MegaPredict = ({ numbers }) => {
     const [predictedNumbers, setPredictedNumbers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lotteryResults, setLotteryResults] = useState([]);
     const [error, setError] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
 
     const fetchLotteryResults = async () => {
         setLoading(true);
@@ -94,6 +95,13 @@ const MegaPredict = ({ numbers }) => {
         }
     }, [lotteryResults]);
 
+    const handleRetry = () => {
+        if (retryCount < 3) {
+            calculatePredictedNumbers();
+            setRetryCount(prev => prev + 1);
+        }
+    };
+
     const matchingNumbers = numbers
         .filter(num => num !== '')
         .map(num => parseInt(num, 10))
@@ -107,7 +115,7 @@ const MegaPredict = ({ numbers }) => {
                     Dự đoán xác suất cho kỳ quay lần sau
                 </Text>
                 {loading ? (
-                    <ActivityIndicator size="large" color="#ff0000" style={{marginTop: 10, paddingBottom: 16}} />
+                    <ActivityIndicator size="large" color="#ff0000" style={{ marginTop: 10, paddingBottom: 16 }} />
                 ) : (
                     <Text style={styles.percentageValue}>78%</Text>
                 )}
@@ -147,6 +155,21 @@ const MegaPredict = ({ numbers }) => {
                         {matchingNumbers.map(num => num.toString().padStart(2, '0')).join(', ')}
                     </Text>
                 </View>
+
+            </View>
+            <View style={{top: '12%'}}>
+                <Text style={[styles.warningText]}>
+                    Không thử quá<Text style={{fontWeight: 'bold', color: '#C7000F'}}> 3 lần </Text>vì sẽ mất xác suất tính toán chuẩn
+                </Text>
+                <TouchableOpacity
+                    style={[styles.retryButton, retryCount >= 3 && styles.disabledButton]}
+                    onPress={handleRetry}
+                    disabled={retryCount >= 3}
+                >
+                    <Text style={styles.retryButtonText}>
+                        {retryCount >= 3 ? 'Đã đạt giới hạn' : 'Thử lại lần nữa'}
+                    </Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -243,7 +266,31 @@ const styles = StyleSheet.create({
     matchingNumbers: {
         fontWeight: 'bold',
         color: '#C7000F'
-    }
+    },
+    warningText: {
+        textAlign: 'center',
+        marginVertical: 10,
+        fontSize: 12,
+    },
+    retryButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginVertical: 10,
+        width: 350,
+        backgroundColor: 'white',
+        borderWidth: 1,
+        borderColor: '#D9112A',
+        bottom: '12%'
+    },
+    disabledButton: {
+        backgroundColor: 'white',
+    },
+    retryButtonText: {
+        color: '#D9112A',
+        fontWeight: 'bold',
+    },
 });
 
 export default MegaPredict;

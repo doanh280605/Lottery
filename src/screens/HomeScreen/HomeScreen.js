@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { View, Text, StyleSheet, Image, Dimensions, ScrollView, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { XMLParser } from "fast-xml-parser";
 import Carousel from "react-native-reanimated-carousel";
 import 'react-native-gesture-handler';
@@ -240,6 +241,7 @@ function MyTabs() {
                     ),
                     tabBarLabel: () => null,
                     headerShown: true,
+                    headerBackTitleVisible: true,
                     headerStyle: {
                         backgroundColor: '#A80D05'
                     },
@@ -261,6 +263,12 @@ function MyTabs() {
                             Settings
                         </Text>
                     ),
+                    headerShown: true,
+                    headerBackTitleVisible: true,
+                    headerStyle: {
+                        backgroundColor: '#A80D05'
+                    },
+                    headerTintColor: 'white'
                 }}
             />
         </Tab.Navigator>

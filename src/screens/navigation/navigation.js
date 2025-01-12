@@ -5,6 +5,7 @@ import SplashScreen from "../SplashScreen";
 import HomeScreen from "../HomeScreen";
 import DrawDetail from "../DrawDetail";
 import PowerDetail from "../PowerDetail";
+import DiceScreen from "../DiceScreen";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {

@@ -2980,6 +2980,7 @@ __metadata:
     react-native-reanimated-carousel: ^3.5.1
     react-native-safe-area-context: ^5.0.0
     react-native-screens: ^4.4.0
+    react-native-switch: ^1.5.1
     react-test-renderer: 18.3.1
     typescript: 5.0.4
     xml2js: ^0.6.2
@@ -8133,7 +8134,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -8327,6 +8328,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 6e90539e8eb79ba4b3fd23f6c27b943e3595c9c275b3002e6b376eb0a1c17521bde9b05d0b2c4c7ab67042f20bdbec87c3d1e3d182a531b7e3115a2dace0e912
+  languageName: node
+  linkType: hard
+
+"react-native-switch@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "react-native-switch@npm:1.5.1"
+  dependencies:
+    prop-types: ^15.6.0
+  peerDependencies:
+    react-native: ">=0.29"
+  checksum: 0ee7af977fac9fce5a5eac1981be9db80c527d0499c2149a40d848811bfd489048864a7bcc34f537f1dc011ef778e5495bd5f96d678c71cd8215616f0403fc29
   languageName: node
   linkType: hard
 

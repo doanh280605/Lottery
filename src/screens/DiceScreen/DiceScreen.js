@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Button } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import PowerPredict from '../../components/PowerPrediction/PowerPredict';
 import MegaPredict from '../../components/MegaPrediction/MegaPredict';
@@ -34,6 +34,17 @@ const DiceScreen = () => {
     const [isNumberEntered, setIsNumberEntered] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                setSelectedTicket(ticketOptions[0]?.id);
+                setNumbers(Array(6).fill(''));
+                setIsNumberEntered(false);
+                setIsConfirmed(false);
+            };
+        }, [])
+    );
+
     const handleInputChange = (text, index) => {
         if (!/^\d*$/.test(text)) return;
         const updateNumbers = [...numbers];
@@ -51,28 +62,7 @@ const DiceScreen = () => {
             Alert.alert('Vui lòng nhập ít nhất 1 số');
             return;
         }
-
-        // For testing, just set isConfirmed to true without making the API call
         setIsConfirmed(true);
-
-        // Comment out the API call for now
-        /* try {
-            const response = await fetch('', {
-                method: 'POST',
-                header: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ticketType: selectedTicket,
-                    numbers: formattedNumbers
-                }),
-            });
-            const data = await response.json();
-            Alert.alert('Calculation result', `Result: ${data.result}`);
-        } catch (error) {
-            console.error('Error: ', error);
-            Alert.alert('Error', 'Failed to submit data')
-        } */
     };
 
     useLayoutEffect(() => {
