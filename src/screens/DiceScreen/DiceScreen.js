@@ -2,6 +2,9 @@ import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Button } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import PowerPredict from '../../components/PowerPrediction/PowerPredict';
+import MegaPredict from '../../components/MegaPrediction/MegaPredict';
+
 import vietlott from '../../../assets/vietloff.png'
 import megaBig from '../../../assets/megaBigger.png'
 import max from '../../../assets/max.png'
@@ -29,8 +32,10 @@ const DiceScreen = () => {
     // State to store numbers
     const [numbers, setNumbers] = useState(Array(6).fill(''));
     const [isNumberEntered, setIsNumberEntered] = useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
     const handleInputChange = (text, index) => {
+        if (!/^\d*$/.test(text)) return;
         const updateNumbers = [...numbers];
         updateNumbers[index] = text;
         setNumbers(updateNumbers);
@@ -42,14 +47,18 @@ const DiceScreen = () => {
     const handleSubmit = async () => {
         const formattedNumbers = numbers.filter(num => num !== '').map(num => parseInt(num, 10));
 
-        if(formattedNumbers.length === 0){
+        if (formattedNumbers.length === 0) {
             Alert.alert('Vui lòng nhập ít nhất 1 số');
             return;
         }
 
-        try {
+        // For testing, just set isConfirmed to true without making the API call
+        setIsConfirmed(true);
+
+        // Comment out the API call for now
+        /* try {
             const response = await fetch('', {
-                method: 'POST', 
+                method: 'POST',
                 header: {
                     'Content-Type': 'application/json',
                 },
@@ -63,8 +72,8 @@ const DiceScreen = () => {
         } catch (error) {
             console.error('Error: ', error);
             Alert.alert('Error', 'Failed to submit data')
-        }
-    }
+        } */
+    };
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -75,42 +84,57 @@ const DiceScreen = () => {
             },
         });
     }, [navigation]);
+
+    const renderPredictionComponent = () => {
+        if (selectedTicket === 'megaSmall') {
+            return <MegaPredict numbers={numbers} />;
+        } else if (selectedTicket === 'power') {
+            return <PowerPredict numbers={numbers} />;
+        }
+        return null;
+    };
+
     return (
         <View style={styles.container}>
-            <View style={styles.chooseNumberContainer}>
-                <Text style={styles.title}>Chọn loại vé</Text>
-                <View style={styles.selector}>
-                    {ticketOptions.map((ticket) => (
-                        <TouchableOpacity
-                            key={ticket.id}
-                            onPress={() => handleSelect(ticket.id)}
-                            style={[
-                                styles.imageWrapper,
-                                selectedTicket === ticket.id && styles.selectedImageWrapper,
-                                (ticket.id === 'vietlott' || ticket.id === 'power') && { marginTop: 3 },
-                            ]}
-                        >
-                            <Image source={ticket.source} style={styles.icon} />
-                        </TouchableOpacity>
-                    ))}
-                </View>
+            <View style={[styles.chooseNumberContainer, isConfirmed && styles.expandedContainer]}>
+                {/* Title */}
+                {!isConfirmed && (
+                    <>
+                        <Text style={styles.title}>Chọn loại vé</Text>
+
+                        <View style={styles.selector}>
+                            {ticketOptions.map((ticket) => (
+                                <TouchableOpacity
+                                    key={ticket.id}
+                                    onPress={() => handleSelect(ticket.id)}
+                                    style={[
+                                        styles.imageWrapper,
+                                        selectedTicket === ticket.id && styles.selectedImageWrapper,
+                                        (ticket.id === 'vietlott' || ticket.id === 'power') && { marginTop: 3 },
+                                    ]}
+                                >
+                                    <Image source={ticket.source} style={styles.icon} />
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </>
+                )}
+
+                {/* Divider */}
                 <View style={styles.divider} />
+
                 {selectedTicket && (
                     <View style={styles.selectedTicketContainer}>
                         <Image
-                            source={
-                                ticketOptions.find((ticket) => ticket.id === selectedTicket)?.highResSource
-                            }
+                            source={ticketOptions.find((ticket) => ticket.id === selectedTicket)?.highResSource}
                             style={styles.selectedTicketImage}
                         />
                     </View>
                 )}
-                <Text style={{
-                    textAlign: 'center',
-                    fontSize: 16, 
-                    fontWeight: 'bold',
-                    marginTop: 15
-                }}>Số của bạn chọn
+
+                {/* Number Input */}
+                <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: 15 }}>
+                    Số của bạn chọn
                 </Text>
                 <View style={styles.numberInputContainer}>
                     {Array.from({ length: 6 }).map((_, index) => (
@@ -118,24 +142,30 @@ const DiceScreen = () => {
                             key={index}
                             style={styles.numberInput}
                             keyboardType="numeric"
-                            maxLength={2} 
+                            maxLength={2}
                             textAlign="center"
                             value={numbers[index]}
                             onChangeText={(text) => handleInputChange(text, index)}
+                            editable={!isConfirmed}
                         />
                     ))}
                 </View>
-                <TouchableOpacity 
-                    onPress={handleSubmit} 
-                    style={[
-                        styles.button,
-                        { backgroundColor: isNumberEntered ? '#D9112A' : '#B0B0B0' },
-                    ]}
-                    disabled={!isNumberEntered}
-                >
-                    <Text style={styles.buttonText}>XÁC NHẬN</Text>
-                </TouchableOpacity>
+
+                {/* Submit Button */}
+                {!isConfirmed && (
+                    <TouchableOpacity
+                        onPress={handleSubmit}
+                        style={[styles.button, { backgroundColor: isNumberEntered ? '#D9112A' : '#B0B0B0' }]}
+                        disabled={!isNumberEntered}
+                    >
+                        <Text style={styles.buttonText}>XÁC NHẬN</Text>
+                    </TouchableOpacity>
+                )}
+
+                {/* Prediction Component */}
+                {isConfirmed && renderPredictionComponent()}
             </View>
+
         </View>
     );
 };
@@ -146,6 +176,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white'
+    },
+    expandedContainer: {
+        height: '83%',
+        bottom: '6%'
     },
     text: {
         fontSize: 24,
@@ -199,8 +233,8 @@ const styles = StyleSheet.create({
     numberInput: {
         width: 50,
         height: 50,
-        borderRadius: 25, 
-        borderWidth: 2,
+        borderRadius: 25,
+        borderWidth: 1,
         borderColor: 'red',
         textAlign: 'center',
         fontSize: 18,
@@ -210,7 +244,7 @@ const styles = StyleSheet.create({
     },
     button: {
         position: 'absolute',
-        top:'123%',
+        top: '123%',
         left: '2.5%',
         right: '2.5%',
         borderRadius: 15,
@@ -221,7 +255,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontWeight: 'bold', 
+        fontWeight: 'bold',
         fontSize: 20,
     },
 });
