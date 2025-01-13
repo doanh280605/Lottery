@@ -5,7 +5,8 @@ import SplashScreen from "../SplashScreen";
 import HomeScreen from "../HomeScreen";
 import DrawDetail from "../DrawDetail";
 import PowerDetail from "../PowerDetail";
-import DiceScreen from "../DiceScreen";
+import Data from "../Data";
+import History from "../History";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -29,6 +30,28 @@ export default function Navigation() {
                 <Stack.Screen
                     name="power-detail"
                     component={PowerDetail}
+                    options={{ headerShown: true,
+                               headerBackTitleVisible: false,
+                               headerStyle: {
+                                backgroundColor: '#A80D05'
+                               },
+                               headerTintColor: 'white'
+                    }}
+                />
+                <Stack.Screen
+                    name="data"
+                    component={Data}
+                    options={{ headerShown: true,
+                               headerBackTitleVisible: false,
+                               headerStyle: {
+                                backgroundColor: '#A80D05'
+                               },
+                               headerTintColor: 'white'
+                    }}
+                />
+                <Stack.Screen
+                    name="history"
+                    component={History}
                     options={{ headerShown: true,
                                headerBackTitleVisible: false,
                                headerStyle: {

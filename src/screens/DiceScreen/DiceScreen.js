@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Button } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 
 import PowerPredict from '../../components/PowerPrediction/PowerPredict';
 import MegaPredict from '../../components/MegaPrediction/MegaPredict';
@@ -62,7 +63,21 @@ const DiceScreen = () => {
             Alert.alert('Vui lòng nhập ít nhất 1 số');
             return;
         }
-        setIsConfirmed(true);
+        
+        try {
+            const response = await axios.post('http://localhost:3000/api/guess', {
+                ticketType: selectedTicket,
+                numbers: formattedNumbers,
+            })
+
+            if(response.status === 201){
+                Alert.alert('Dự đoán đã được lưu!');
+                setIsConfirmed(true);
+            }
+        } catch (error) {
+            console.error('Error submitting guess: ', error);
+            Alert.alert('Không thể lưu dự đoán, vui lòng thử lại')
+        }
     };
 
     useLayoutEffect(() => {

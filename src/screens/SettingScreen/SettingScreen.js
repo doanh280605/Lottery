@@ -29,12 +29,12 @@ const SettingScreen = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('data')}>
                 <Image source={require('../../../assets/Data.png')} style={styles.icon} />
                 <Text style={styles.text}>Thống kê cơ bản</Text>
                 <Text style={styles.arrow}>{'>'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.item, { marginTop: 1 }]} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={[styles.item, { marginTop: 1 }]} onPress={() => navigation.navigate('history')}>
                 <Image source={require('../../../assets/Setting.png')} style={styles.icon} />
                 <Text style={styles.text}>Lịch sử dự đoán</Text>
                 <Text style={styles.arrow}>{'>'}</Text>
