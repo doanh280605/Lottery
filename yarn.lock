@@ -2498,6 +2498,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/material-top-tabs@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@react-navigation/material-top-tabs@npm:7.1.0"
+  dependencies:
+    "@react-navigation/elements": ^2.2.5
+    color: ^4.2.3
+    react-native-tab-view: ^4.0.5
+  peerDependencies:
+    "@react-navigation/native": ^7.0.14
+    react: ">= 18.2.0"
+    react-native: "*"
+    react-native-pager-view: ">= 6.0.0"
+  checksum: 7c7efbc7e9db8c148a191ffc203854758f543c439348274625ae5c034fefeb70147b77f404253b9d269406fe583d4604111002b0850247e845f8b4042043d2ff
+  languageName: node
+  linkType: hard
+
 "@react-navigation/native-stack@npm:^6.11.0":
   version: 6.11.0
   resolution: "@react-navigation/native-stack@npm:6.11.0"
@@ -2960,6 +2976,7 @@ __metadata:
     "@react-native/metro-config": 0.75.3
     "@react-native/typescript-config": 0.75.3
     "@react-navigation/bottom-tabs": ^7.2.0
+    "@react-navigation/material-top-tabs": ^7.1.0
     "@react-navigation/native": ^7.0.14
     "@react-navigation/native-stack": ^6.11.0
     "@types/react": ^18.2.6
