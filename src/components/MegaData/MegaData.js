@@ -1,13 +1,11 @@
 import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 
-import MostFrequentTable from '../../components/MegaData/MostFrequent/MostFrequentTable';
-import LeastFrequentTable from '../../components/MegaData/LeastFrequent/LeastFrequentTable';
-import NotAppearedTable from '../../components/MegaData/NotAppearedTable';
-import ConsecutiveTable from '../../components/MegaData/ConsecutiveTable';
-import Mega from '../Mega/Mega';
+import MostFrequentTable from './MostFrequent/MostFrequentTable';
+import LeastFrequentTable from './LeastFrequent/LeastFrequentTable';
+import ConsecutiveTable from './ConsecutiveTable';
+import NotAppearedTable from './NotAppearedTable';
 
 const MegaData = () => {
     const chartData = [

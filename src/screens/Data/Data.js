@@ -2,6 +2,7 @@ import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MegaData from '../../components/MegaData';
+import PowerData from '../../components/PowerData';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
@@ -27,10 +28,14 @@ const Data = () => {
         inactiveTintColor: '#888',
         style: { backgroundColor: '#3CB371' },
         indicatorStyle: { backgroundColor: '#FFD700' },
+        tabBarLabelStyle: {
+          fontWeight: 'bold',
+          fontSize: 16
+        }
       }}
     >
       <Tab.Screen name="Mega" component={MegaData} />
-      {/* <Tab.Screen name="Power" component={Power} /> */}
+      <Tab.Screen name="Power" component={PowerData} />
     </Tab.Navigator>
   );
 };
