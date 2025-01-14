@@ -2973,14 +2973,18 @@ __metadata:
     prettier: 2.8.8
     react: 18.3.1
     react-native: 0.75.3
+    react-native-chart-kit: ^6.12.0
     react-native-gesture-handler: ^2.21.2
     react-native-html-parser: ^0.1.0
     react-native-linear-gradient: ^2.8.3
+    react-native-pager-view: ^6.6.1
     react-native-reanimated: ^3.16.6
     react-native-reanimated-carousel: ^3.5.1
     react-native-safe-area-context: ^5.0.0
     react-native-screens: ^4.4.0
+    react-native-svg: ^15.11.1
     react-native-switch: ^1.5.1
+    react-native-tab-view: ^4.0.5
     react-test-renderer: 18.3.1
     typescript: 5.0.4
     xml2js: ^0.6.2
@@ -4067,6 +4071,16 @@ __metadata:
     domutils: ^3.0.1
     nth-check: ^2.0.1
   checksum: 2772c049b188d3b8a8159907192e926e11824aea525b8282981f72ba3f349cf9ecd523fdf7734875ee2cb772246c22117fc062da105b6d59afe8dcd5c99c9bda
+  languageName: node
+  linkType: hard
+
+"css-tree@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "css-tree@npm:1.1.3"
+  dependencies:
+    mdn-data: 2.0.14
+    source-map: ^0.6.1
+  checksum: 79f9b81803991b6977b7fcb1588799270438274d89066ce08f117f5cdb5e20019b446d766c61506dd772c839df84caa16042d6076f20c97187f5abe3b50e7d1f
   languageName: node
   linkType: hard
 
@@ -6886,7 +6900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.21":
+"lodash@npm:^4.17.13, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -7001,6 +7015,13 @@ __metadata:
   version: 1.1.0
   resolution: "math-intrinsics@npm:1.1.0"
   checksum: 0e513b29d120f478c85a70f49da0b8b19bc638975eca466f2eeae0071f3ad00454c621bf66e16dd435896c208e719fc91ad79bbfba4e400fe0b372e7c1c9c9a2
+  languageName: node
+  linkType: hard
+
+"mdn-data@npm:2.0.14":
+  version: 2.0.14
+  resolution: "mdn-data@npm:2.0.14"
+  checksum: 9d0128ed425a89f4cba8f787dca27ad9408b5cb1b220af2d938e2a0629d17d879a34d2cb19318bdb26c3f14c77dd5dfbae67211f5caaf07b61b1f2c5c8c7dc16
   languageName: node
   linkType: hard
 
@@ -7999,6 +8020,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"paths-js@npm:^0.4.10":
+  version: 0.4.11
+  resolution: "paths-js@npm:0.4.11"
+  checksum: a2e968450d4c02a3aed2866c28766e6d386afd9a4ed5f8fe9c4f87e6867ef57d94d0e7a184f8987dfa7c59fed2519e10052320505b5bd1fd7a28dea7bb94995d
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0, picocolors@npm:^1.1.0":
   version: 1.1.1
   resolution: "picocolors@npm:1.1.1"
@@ -8042,6 +8070,13 @@ __metadata:
   dependencies:
     find-up: ^4.0.0
   checksum: 9863e3f35132bf99ae1636d31ff1e1e3501251d480336edb1c211133c8d58906bed80f154a1d723652df1fda91e01c7442c2eeaf9dc83157c7ae89087e43c8d6
+  languageName: node
+  linkType: hard
+
+"point-in-polygon@npm:^1.0.1":
+  version: 1.1.0
+  resolution: "point-in-polygon@npm:1.1.0"
+  checksum: 67a6374f0b79bc872bde8e375d7d5ea011a1419c5f4320dfb7705801cd3a8fcaee8bff385465e075b2ce863bbc86ccd74c63345d9f326981cd0807642bc5199c
   languageName: node
   linkType: hard
 
@@ -8241,6 +8276,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-chart-kit@npm:^6.12.0":
+  version: 6.12.0
+  resolution: "react-native-chart-kit@npm:6.12.0"
+  dependencies:
+    lodash: ^4.17.13
+    paths-js: ^0.4.10
+    point-in-polygon: ^1.0.1
+  peerDependencies:
+    react: "> 16.7.0"
+    react-native: ">= 0.50.0"
+    react-native-svg: "> 6.4.1"
+  checksum: 04c225965c0ce3c71205a62bc92743e9188458d8f95c12481e43a2e53c425bd5db8274e57ab93c1cb95ffd3fb54950ca92c3d33e518a3505d7697c247b3b7e15
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:^2.21.2":
   version: 2.21.2
   resolution: "react-native-gesture-handler@npm:2.21.2"
@@ -8270,6 +8320,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: f980d324e551bbc475c6406bdc5250a08242020cbe653412fa169bbdf51e28a502e225de105b4d696d6a1a1b733d44782469020f4936d8b3ce0e2c78e51cf58f
+  languageName: node
+  linkType: hard
+
+"react-native-pager-view@npm:^6.6.1":
+  version: 6.6.1
+  resolution: "react-native-pager-view@npm:6.6.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 85488c464c58fc4420ac626169754f50aeaa6f9a4d4964c4d8a73352057827540a5108914f9b031c737e6d83e35223a353c7e3b0557a6151c4a48bf6f7a8b395
   languageName: node
   linkType: hard
 
@@ -8331,6 +8391,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-svg@npm:^15.11.1":
+  version: 15.11.1
+  resolution: "react-native-svg@npm:15.11.1"
+  dependencies:
+    css-select: ^5.1.0
+    css-tree: ^1.1.3
+    warn-once: 0.1.1
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: be3194d2f3255b90bb239f045092ea46f677277fbd3e02ed6c79a5bcddae487081c971a1f0ed095625806f688e5b3fd5aed6ac200061057fe2bda0e7f09933f6
+  languageName: node
+  linkType: hard
+
 "react-native-switch@npm:^1.5.1":
   version: 1.5.1
   resolution: "react-native-switch@npm:1.5.1"
@@ -8339,6 +8413,19 @@ __metadata:
   peerDependencies:
     react-native: ">=0.29"
   checksum: 0ee7af977fac9fce5a5eac1981be9db80c527d0499c2149a40d848811bfd489048864a7bcc34f537f1dc011ef778e5495bd5f96d678c71cd8215616f0403fc29
+  languageName: node
+  linkType: hard
+
+"react-native-tab-view@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "react-native-tab-view@npm:4.0.5"
+  dependencies:
+    use-latest-callback: ^0.2.1
+  peerDependencies:
+    react: ">= 18.2.0"
+    react-native: "*"
+    react-native-pager-view: ">= 6.0.0"
+  checksum: 8410242eaedc03ebcb4df97af66473e6f80dd537aadea87a388d50852fb2e9f7e1fb64a95274cdf9dca46fc61ddc7d09651084bd63201fc500bca991086df2ae
   languageName: node
   linkType: hard
 
@@ -9864,7 +9951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warn-once@npm:^0.1.0":
+"warn-once@npm:0.1.1, warn-once@npm:^0.1.0":
   version: 0.1.1
   resolution: "warn-once@npm:0.1.1"
   checksum: e6a5a1f5a8dba7744399743d3cfb571db4c3947897875d4962a7c5b1bf2195ab4518c838cb4cea652e71729f21bba2e98dc75686f5fccde0fabbd894e2ed0c0d
