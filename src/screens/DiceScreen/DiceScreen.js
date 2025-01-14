@@ -51,7 +51,6 @@ const DiceScreen = () => {
         const updateNumbers = [...numbers];
         updateNumbers[index] = text;
         setNumbers(updateNumbers);
-
         setIsNumberEntered(updateNumbers.some(num => num !== ''));
     }
 
@@ -92,6 +91,7 @@ const DiceScreen = () => {
 
     const renderPredictionComponent = () => {
         if (selectedTicket === 'megaSmall') {
+            console.log('Passing numbers: ', numbers)
             return <MegaPredict numbers={numbers} />;
         } else if (selectedTicket === 'power') {
             return <PowerPredict numbers={numbers} />;
