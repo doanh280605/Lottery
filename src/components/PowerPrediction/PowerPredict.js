@@ -7,6 +7,34 @@ const PowerPredict = ({ numbers }) => {
     const [lotteryResults, setLotteryResults] = useState([]);
     const [error, setError] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
+    const [probability, setProbability] = useState(null)
+
+    const calculateCombinations = (n, k) => {
+        if (k === 0 || k === n) return 1;
+        return (n * calculateCombinations(n - 1, k - 1)) / k;
+    };
+    
+    const calculateProbability = () => {
+        // Count how many numbers the user has entered
+        const numbersEntered = numbers.filter(num => num !== '').length;
+
+        if (numbersEntered === 6) {
+            setProbability(100);
+            return;
+        }
+    
+        if (numbersEntered < 6) {
+            const remainingNumbers = 6 - numbersEntered;
+            const remainingCombinations = calculateCombinations(45 - numbersEntered, remainingNumbers);
+        
+            const prob = (remainingNumbers / remainingCombinations) * 100;
+        
+            let formattedProb = prob.toFixed(5).replace(/\.?0+$/, '');
+
+            setProbability(formattedProb);
+        }
+        
+    };
 
     const fetchLotteryResults = async () => {
         setLoading(true);
@@ -92,6 +120,7 @@ const PowerPredict = ({ numbers }) => {
         if (lotteryResults.length > 0) {
             calculatePredictedNumbers();
         }
+        calculateProbability();
     }, [lotteryResults]);
 
     const handleRetry = () => {
@@ -116,7 +145,7 @@ const PowerPredict = ({ numbers }) => {
                 {loading ? (
                     <ActivityIndicator size="large" color="#ff0000" style={{ marginTop: 10, paddingBottom: 16 }} />
                 ) : (
-                    <Text style={styles.percentageValue}>78%</Text>
+                    <Text style={styles.percentageValue}>{probability ? `${probability}%` : 'Chưa tính toán'}</Text>
                 )}
             </View>
 

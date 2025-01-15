@@ -7,7 +7,8 @@ const MegaPredict = ({ numbers }) => {
     const [lotteryResults, setLotteryResults] = useState([]);
     const [error, setError] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
-    const [probability, setProbability] = useState(null)
+    const [probability, setProbability] = useState(null);
+    const [ticketTurn, setTicketTurn] = useState(0);
 
     const calculateCombinations = (n, k) => {
         if (k === 0 || k === n) return 1;
@@ -58,9 +59,15 @@ const MegaPredict = ({ numbers }) => {
                         resultNumbers: Array.isArray(item.resultNumbers)
                             ? item.resultNumbers.map(num => parseInt(num, 10))
                             : [],
+                        ticketTurn: item.ticketTurn || 'N/A',
                     }));
                     setLotteryResults(formattedResults);
                     setError(null);
+                    if (formattedResults.length > 0) {
+                        const currentTicketTurn = formattedResults[0].ticketTurn;
+                        const nextTicketTurn = (parseInt(currentTicketTurn) + 1).toString().padStart(5, '0');
+                        setTicketTurn(nextTicketTurn);
+                    }
                 } else {
                     setError('No lottery data available.');
                 }
@@ -80,6 +87,30 @@ const MegaPredict = ({ numbers }) => {
     useEffect(() => {
         fetchLotteryResults();
     }, []);
+
+    const savePredictionToDB = async (predictedNumbers) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/prediction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ticketType: 'auto-generated',
+                    ticketTurn: ticketTurn,
+                    predictedNumbers,
+                }),
+            });
+    
+            if (response.ok) {
+                console.log('Prediction saved to the database.');
+            } else {
+                console.error('Failed to save prediction.');
+            }
+        } catch (error) {
+            console.error('Error saving prediction:', error);
+        }
+    };
 
     const calculatePredictedNumbers = () => {
         if (lotteryResults.length === 0) {
@@ -113,8 +144,12 @@ const MegaPredict = ({ numbers }) => {
             predictedNumbersSet.add(randomNum);
         }
 
-        setPredictedNumbers(Array.from(predictedNumbersSet).sort((a, b) => a - b));
+        const finalPredictedNumbers = Array.from(predictedNumbersSet).sort((a, b) => a - b);
+
+        setPredictedNumbers(finalPredictedNumbers);
         setError(null);
+
+        savePredictionToDB(finalPredictedNumbers);
     };
 
     // useEffect to fetch data once when the component mounts
