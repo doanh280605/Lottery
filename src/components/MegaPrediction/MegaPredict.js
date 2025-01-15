@@ -104,6 +104,7 @@ const MegaPredict = ({ numbers }) => {
     
             if (response.ok) {
                 console.log('Prediction saved to the database.');
+                console.log('Ticket turn: ', ticketTurn)
             } else {
                 console.error('Failed to save prediction.');
             }

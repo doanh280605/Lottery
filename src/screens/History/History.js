@@ -1,10 +1,10 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 
 const History = () => {
     const navigation = useNavigation();
-    const [latestPrediction, setLatestPrediction] = useState([]);
+    const [predictions, setPredictions] = useState([])
     const [nextTicketTurn, setNextTicketTurn] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -19,59 +19,35 @@ const History = () => {
         });
     }, [navigation]);
 
-    const fetchNextTicketTurn = async () => {
+    const fetchPredictions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/lottery-result');
+            const response = await fetch('http://localhost:3000/api/prediction/history');
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error fetching predictions:', errorText);
+                setError('Không thể tải dự đoán.');
+                return;
+            }
+
             const data = await response.json();
-            if (data && Array.isArray(data) && data.length > 0) {
-                const currentTurn = data[0].ticketTurn;
-                const nextTurn = (parseInt(currentTurn) + 1).toString().padStart(5, '0');
-                setNextTicketTurn(nextTurn);
-                return nextTurn;
+            if (data && Array.isArray(data)) {
+                // Sort predictions by ticketTurn in descending order (newest first)
+                const sortedPredictions = data.sort((a, b) => b.ticketTurn - a.ticketTurn);
+                setPredictions(sortedPredictions);
+            } else {
+                setError('Chưa có dự đoán.');
             }
         } catch (error) {
-            console.error('Error fetching next ticket turn:', error);
-            setError('Failed to fetch ticket turn.');
+            console.error('Error fetching predictions:', error);
+            setError('Không thể tải dự đoán.');
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchLatestPrediction = async (turn) => {
-        if (!turn) return;
-        
-        try {
-            const response = await fetch(`http://localhost:3000/api/prediction/latest?currentTurn=${turn}`);
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error fetching prediction:', errorText);
-                setError('Failed to fetch prediction data.');
-                return;
-            }
-    
-            const data = await response.json();
-            if (data && data.predictedNumbers) {
-                setLatestPrediction(data.predictedNumbers);
-                console.log('Latest prediction for turn:', data.ticketTurn);
-            } else {
-                setError('No prediction data available');
-            }
-        } catch (error) {
-            console.error('Error fetching prediction:', error);
-            setError('Failed to fetch prediction data.');
-        }
-    };
-
     useEffect(() => {
-        const fetchData = async () => {
-            const nextTurn = await fetchNextTicketTurn();
-            if (nextTurn) {
-                await fetchLatestPrediction(nextTurn);
-            }
-        };
-        
-        fetchData();
+        fetchPredictions();
     }, []);
 
     if (loading) {
@@ -88,34 +64,42 @@ const History = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.olderTicketContainer}>
-                <View style={styles.kyve}>
-                    <Text style={{fontSize: 16}}>Kỳ quay </Text>
-                    <Text style={styles.ticketTurn}>#{nextTicketTurn}</Text>
+        <ScrollView 
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}
+        >
+            {predictions.map((prediction, index) => (
+                <View key={index} style={styles.olderTicketContainer}>
+                    <View style={styles.kyve}>
+                        <Text style={{fontSize: 16}}>Kỳ quay </Text>
+                        <Text style={styles.ticketTurn}>#{prediction.ticketTurn}</Text>
+                    </View>
+    
+                    <View style={styles.predictionLabelContainer}>
+                        <Text style={styles.predictionLabel}>Dự đoán các số</Text>
+                    </View>
+    
+                    <View style={styles.olderNumbersContainer}>
+                        {Array.isArray(prediction.predictedNumbers) && 
+                         prediction.predictedNumbers.map((number, idx) => (
+                            <View key={idx} style={styles.olderBall}>
+                                <Text style={styles.olderBallText}>
+                                    {number.toString().padStart(2, '0')}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
                 </View>
-
-                <View style={styles.predictionLabelContainer}>
-                    <Text style={styles.predictionLabel}>Dự đoán các số</Text>
-                </View>
-
-                <View style={styles.olderNumbersContainer}>
-                    {Array.isArray(latestPrediction) && latestPrediction.map((number, index) => (
-                        <View key={index} style={styles.olderBall}>
-                            <Text style={styles.olderBallText}>
-                                {number?.toString().padStart(2, '0') || '00'}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-            </View>
-        </View>
+            ))}
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    contentContainer: { 
         padding: 10,
         alignItems: 'center'
     },
