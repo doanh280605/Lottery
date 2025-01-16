@@ -33,8 +33,18 @@ const History = () => {
             const data = await response.json();
             if (data && Array.isArray(data)) {
                 // Sort predictions by ticketTurn in descending order (newest first)
-                const sortedPredictions = data.sort((a, b) => b.ticketTurn - a.ticketTurn);
-                setPredictions(sortedPredictions);
+                const latestPredictionsMap = data.reduce((acc, prediction) => {
+                    const { ticketTurn, createdAt } = prediction;
+                    if (!acc[ticketTurn] || new Date(acc[ticketTurn].createdAt) < new Date(createdAt)) {
+                        acc[ticketTurn] = prediction;
+                    }
+                    return acc;
+                }, {});
+    
+                // Convert the map to an array and sort by ticketTurn descending
+                const latestPredictions = Object.values(latestPredictionsMap).sort((a, b) => b.ticketTurn - a.ticketTurn);
+    
+                setPredictions(latestPredictions);            
             } else {
                 setError('Chưa có dự đoán.');
             }
@@ -48,6 +58,9 @@ const History = () => {
 
     useEffect(() => {
         fetchPredictions();
+        const interval = setInterval(fetchPredictions, 100000);
+
+        return() => clearInterval(interval)
     }, []);
 
     if (loading) {

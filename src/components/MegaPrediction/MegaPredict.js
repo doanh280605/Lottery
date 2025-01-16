@@ -35,25 +35,24 @@ const MegaPredict = ({ numbers }) => {
             setProbability(formattedProb);
         }
         
-    };
-    
+    };    
 
     const fetchLotteryResults = async () => {
         setLoading(true);
         try {
             const response = await fetch('http://localhost:3000/api/lottery-result');
             const contentType = response.headers.get('Content-Type');
-
+    
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Error fetching lottery results:', errorText);
                 setError('Failed to fetch lottery results.');
-                return;
+                return null;
             }
-
+    
             if (contentType && contentType.includes('application/json')) {
                 const responseData = await response.json();
-
+    
                 if (responseData && Array.isArray(responseData)) {
                     const formattedResults = responseData.map(item => ({
                         resultNumbers: Array.isArray(item.resultNumbers)
@@ -61,15 +60,16 @@ const MegaPredict = ({ numbers }) => {
                             : [],
                         ticketTurn: item.ticketTurn || 'N/A',
                     }));
-                    setLotteryResults(formattedResults);
-                    setError(null);
+                    
                     if (formattedResults.length > 0) {
                         const currentTicketTurn = formattedResults[0].ticketTurn;
-                        const nextTicketTurn = (parseInt(currentTicketTurn) + 1).toString().padStart(5, '0');
+                        const nextTicketTurn = (parseInt(currentTicketTurn, 10) + 1).toString().padStart(5, '0');
+                        setLotteryResults(formattedResults);
                         setTicketTurn(nextTicketTurn);
+                        setError(null);
+                    } else {
+                        setError('No lottery data available.');
                     }
-                } else {
-                    setError('No lottery data available.');
                 }
             } else {
                 const errorText = await response.text();
@@ -83,12 +83,13 @@ const MegaPredict = ({ numbers }) => {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchLotteryResults();
-    }, []);
-
-    const savePredictionToDB = async (predictedNumbers) => {
+    
+    const savePredictionToDB = async (predictedNumbers, turn) => {
+        if (!turn) {
+            console.error('No valid ticket turn available');
+            return;
+        }
+    
         try {
             const response = await fetch('http://localhost:3000/api/prediction', {
                 method: 'POST',
@@ -97,61 +98,73 @@ const MegaPredict = ({ numbers }) => {
                 },
                 body: JSON.stringify({
                     ticketType: 'auto-generated',
-                    ticketTurn: ticketTurn,
+                    ticketTurn: turn,
                     predictedNumbers,
                 }),
             });
     
             if (response.ok) {
-                console.log('Prediction saved to the database.');
-                console.log('Ticket turn: ', ticketTurn)
+                console.log('Successfully saved prediction with ticket turn:', turn);
             } else {
-                console.error('Failed to save prediction.');
+                throw new Error('Failed to save prediction');
             }
         } catch (error) {
             console.error('Error saving prediction:', error);
+            setError('Failed to save prediction to database.');
         }
     };
-
-    const calculatePredictedNumbers = () => {
-        if (lotteryResults.length === 0) {
-            setError('No data to predict from.');
+    
+    const calculatePredictedNumbers = async () => {
+        if (lotteryResults.length === 0 || !ticketTurn) {
             return;
         }
-
+    
         const previousResults = lotteryResults.map(item => item.resultNumbers);
         const allNumbers = previousResults.flat().map(Number);
         const frequencyMap = {};
-
+    
         allNumbers.forEach(num => {
             frequencyMap[num] = (frequencyMap[num] || 0) + 1;
         });
-
+    
         const sortedByFrequency = Object.keys(frequencyMap)
             .sort((a, b) => frequencyMap[b] - frequencyMap[a])
             .map(Number);
-
+    
         const predictedNumbersSet = new Set();
-
+    
         while (predictedNumbersSet.size < 3 && sortedByFrequency.length > 0) {
             const num = sortedByFrequency.shift();
             if (Math.random() < 0.6) {
                 predictedNumbersSet.add(num);
             }
         }
-
+    
         while (predictedNumbersSet.size < 6) {
             const randomNum = Math.floor(Math.random() * 46);
             predictedNumbersSet.add(randomNum);
         }
-
+    
         const finalPredictedNumbers = Array.from(predictedNumbersSet).sort((a, b) => a - b);
-
         setPredictedNumbers(finalPredictedNumbers);
-        setError(null);
-
-        savePredictionToDB(finalPredictedNumbers);
+    
+        await savePredictionToDB(finalPredictedNumbers, ticketTurn);
     };
+    
+    // Single useEffect to handle the flow
+    useEffect(() => {
+        const initialize = async () => {
+            await fetchLotteryResults();
+        };
+        initialize();
+    }, []);
+    
+    // Separate useEffect to handle prediction calculation after we have results and ticket turn
+    useEffect(() => {
+        if (lotteryResults.length > 0 && ticketTurn) {
+            calculatePredictedNumbers();
+        }
+    }, [ticketTurn]); // Only depend on ticketTurn
 
     // useEffect to fetch data once when the component mounts
     useEffect(() => {
