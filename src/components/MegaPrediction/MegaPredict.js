@@ -97,7 +97,7 @@ const MegaPredict = ({ numbers }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    ticketType: 'auto-generated',
+                    ticketType: 'mega',
                     ticketTurn: turn,
                     predictedNumbers,
                 }),

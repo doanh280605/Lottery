@@ -1,6 +1,9 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
+
+import mega from '../../../assets/mega.png'
+import power from '../../../assets/power.png'
 
 const History = () => {
     const navigation = useNavigation();
@@ -8,6 +11,12 @@ const History = () => {
     const [nextTicketTurn, setNextTicketTurn] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const [selectedTicket, setSelectedTicket] = useState('mega');
+
+    const handleSelect = (ticketType) => {
+        setSelectedTicket(ticketType);
+    };
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -22,7 +31,8 @@ const History = () => {
     const fetchPredictions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/prediction/history');
+            const response = await fetch(`http://localhost:3000/api/prediction/history?ticketType=${selectedTicket}`);
+
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Error fetching predictions:', errorText);
@@ -32,7 +42,6 @@ const History = () => {
 
             const data = await response.json();
             if (data && Array.isArray(data)) {
-                // Sort predictions by ticketTurn in descending order (newest first)
                 const latestPredictionsMap = data.reduce((acc, prediction) => {
                     const { ticketTurn, createdAt } = prediction;
                     if (!acc[ticketTurn] || new Date(acc[ticketTurn].createdAt) < new Date(createdAt)) {
@@ -40,11 +49,9 @@ const History = () => {
                     }
                     return acc;
                 }, {});
-    
-                // Convert the map to an array and sort by ticketTurn descending
+
                 const latestPredictions = Object.values(latestPredictionsMap).sort((a, b) => b.ticketTurn - a.ticketTurn);
-    
-                setPredictions(latestPredictions);            
+                setPredictions(latestPredictions);
             } else {
                 setError('Chưa có dự đoán.');
             }
@@ -60,60 +67,118 @@ const History = () => {
         fetchPredictions();
         const interval = setInterval(fetchPredictions, 100000);
 
-        return() => clearInterval(interval)
-    }, []);
+        return () => clearInterval(interval);
+    }, [selectedTicket]);
+
 
     if (loading) {
         return (
-            <View style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+            <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
                 <ActivityIndicator size="large" color="#C7000F" />
             </View>
         );
     }
-    
+
 
     if (error) {
         return <Text style={styles.errorText}>{error}</Text>;
     }
 
     return (
-        <ScrollView 
-            style={styles.container}
-            contentContainerStyle={styles.contentContainer}
-        >
-            {predictions.map((prediction, index) => (
-                <View key={index} style={styles.olderTicketContainer}>
-                    <View style={styles.kyve}>
-                        <Text style={{fontSize: 16}}>Kỳ quay </Text>
-                        <Text style={styles.ticketTurn}>#{prediction.ticketTurn}</Text>
-                    </View>
-    
-                    <View style={styles.predictionLabelContainer}>
-                        <Text style={styles.predictionLabel}>Dự đoán các số</Text>
-                    </View>
-    
-                    <View style={styles.olderNumbersContainer}>
-                        {Array.isArray(prediction.predictedNumbers) && 
-                         prediction.predictedNumbers.map((number, idx) => (
-                            <View key={idx} style={styles.olderBall}>
-                                <Text style={styles.olderBallText}>
-                                    {number.toString().padStart(2, '0')}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
+        <>
+            <View style={styles.selectorContainer}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>Loại vé</Text>
+                <View style={styles.selector}>
+                    <TouchableOpacity onPress={() => handleSelect('mega')}>
+                        <View
+                            style={[
+                                styles.selectionIndicator,
+                                selectedTicket === 'mega' && styles.activeSelection,
+                            ]}
+                        >
+                            <Image source={mega} style={styles.icon} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleSelect('power')}>
+                        <View
+                            style={[
+                                styles.selectionIndicator,
+                                selectedTicket === 'power' && styles.activeSelection,
+                            ]}
+                        >
+                            <Image source={power} style={styles.icon} />
+                        </View>
+                    </TouchableOpacity>
                 </View>
-            ))}
-        </ScrollView>
+            </View>
+
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={styles.contentContainer}
+            >
+                {/* Display Predictions */}
+                {predictions
+                    .filter((prediction) => prediction.ticketType === selectedTicket)
+                    .map((prediction, index) => (
+                        <View key={index} style={styles.olderTicketContainer}>
+                            <View style={styles.kyve}>
+                                <Text style={{ fontSize: 16 }}>Kỳ quay </Text>
+                                <Text style={styles.ticketTurn}>#{prediction.ticketTurn}</Text>
+                            </View>
+
+                            <View style={styles.predictionLabelContainer}>
+                                <Text style={styles.predictionLabel}>Dự đoán các số</Text>
+                            </View>
+
+                            <View style={styles.olderNumbersContainer}>
+                                {Array.isArray(prediction.predictedNumbers) &&
+                                    prediction.predictedNumbers.map((number, idx) => (
+                                        <View key={idx} style={styles.olderBall}>
+                                            <Text style={styles.olderBallText}>
+                                                {number.toString().padStart(2, '0')}
+                                            </Text>
+                                        </View>
+                                    ))}
+                            </View>
+                        </View>
+                    ))}
+            </ScrollView>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        bottom: '2%'
     },
-    contentContainer: { 
-        padding: 10,
+    selectorContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    selector: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        marginVertical: 10,
+        paddingTop: 10,
+        paddingHorizontal: 80,
+        width: 370,
+    },
+    selectionIndicator: {
+        borderRadius: 10,
+        paddingHorizontal: 10,
+    },
+    activeSelection: {
+        backgroundColor: '#FFC91F',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        borderRadius: 20
+    },
+    contentContainer: {
         alignItems: 'center'
     },
     olderTicketContainer: {
