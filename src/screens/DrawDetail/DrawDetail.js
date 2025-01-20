@@ -15,6 +15,8 @@ const DrawDetailScreen = () => {
     const { result, lotteryData } = route.params;
 
     const [currentGuess, setCurrentGuess] = useState(null);
+    const [isLoadingGuess, setIsLoadingGuess] = useState(true);
+    const [guessError, setGuessError] = useState(null); 
 
     const fetchUserGuessForTicketTurn = async () => {
         if (!result?.ticketTurn) return;
@@ -25,14 +27,21 @@ const DrawDetailScreen = () => {
                 ticketTurn: result.ticketTurn
             });
     
-            const response = await fetch(`http://localhost:3000/api/guesses?${queryParams}`);
+            // Log the full URL with query params to ensure it's correct
+            const url = `http://localhost:3000/api/guesses?${queryParams}`;
+            console.log('Request URL:', url);
     
+            const response = await fetch(url);
+    
+            // Check if the response is successful
             if (!response.ok) {
-                throw new Error(`Error fetching guess: ${response.statusText}`);
+                throw new Error(`Failed to fetch guess: ${response.statusText}`);
             }
     
+            // Parse the response JSON
             const data = await response.json();
     
+            // Check if the data is valid
             if (data && Array.isArray(data) && data.length > 0) {
                 setCurrentGuess(data[0]);
                 console.log("Guess: ", data[0]);
@@ -42,7 +51,7 @@ const DrawDetailScreen = () => {
             }
         } catch (error) {
             console.error('Error fetching guess:', error);
-            setGuessError(error.message);
+            setGuessError(error.message); // Log error message from the server or network
             setCurrentGuess(null);
         } finally {
             setIsLoadingGuess(false);
