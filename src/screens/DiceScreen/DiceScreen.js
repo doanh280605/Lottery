@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useCallback } from 'react';
+import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Button } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -20,8 +20,8 @@ const DiceScreen = () => {
     const navigation = useNavigation();
 
     const ticketOptions = [
-        { id: 'megaSmall', source: megaSmall, highResSource: megaBig },
-        { id: 'power', source: power, highResSource: powerBig },
+        { id: 'megaSmall', source: megaSmall, highResSource: megaBig, apiUrl: 'http://localhost:3000/api/lottery-result' },
+        { id: 'power', source: power, highResSource: powerBig, apiUrl: 'http://localhost:3000/api/power-result' },
     ];
 
     const [selectedTicket, setSelectedTicket] = useState(ticketOptions[0]?.id);
@@ -34,6 +34,7 @@ const DiceScreen = () => {
     const [numbers, setNumbers] = useState(Array(6).fill(''));
     const [isNumberEntered, setIsNumberEntered] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
+    const [ticketTurn, setTicketTurn] = useState(0);
 
     useFocusEffect(
         useCallback(() => {
@@ -54,30 +55,80 @@ const DiceScreen = () => {
         setIsNumberEntered(updateNumbers.some(num => num !== ''));
     }
 
-    // Handle form submission
-    const handleSubmit = async () => {
-        const formattedNumbers = numbers.filter(num => num !== '').map(num => parseInt(num, 10));
+    const fetchLotteryResults = async (selectedTicketId) => {  
+        try {
+            const selectedTicket = ticketOptions.find(ticket => ticket.id === selectedTicketId);
+            
+            if (!selectedTicket) {
+                throw new Error('Invalid ticket selection');
+            }
+    
+            const response = await fetch(selectedTicket.apiUrl);
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const responseData = await response.json();
+    
+            if (!Array.isArray(responseData) || responseData.length === 0) {
+                throw new Error('No lottery data available');
+            }
+    
+            const latestTicket = responseData[0];
+            
+            if (!latestTicket?.ticketTurn) {
+                throw new Error('Invalid ticket data - missing ticketTurn');
+            }
+    
+            // Calculate next ticket turn
+            const currentTurn = parseInt(latestTicket.ticketTurn, 10);
+            const nextTicketTurn = (currentTurn + 1).toString().padStart(5, '0');
+            
+            setTicketTurn(nextTicketTurn);
+    
+        } catch (error) {
+            console.error('Error in fetchLotteryResults:', error.message);
+            setError(error.message);
+            setTicketTurn(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    useEffect(() => {
+        if (selectedTicket) {
+            fetchLotteryResults(selectedTicket);
+        }
+    }, [selectedTicket]);
+    
 
+    // Handle form submission
+    const handleSubmit = async () => {    
+        const formattedNumbers = numbers.filter(num => num !== '').map(num => parseInt(num, 10));
+    
         if (formattedNumbers.length === 0) {
             Alert.alert('Vui lòng nhập ít nhất 1 số');
             return;
         }
-        
+    
         try {
             const response = await axios.post('http://localhost:3000/api/guess', {
                 ticketType: selectedTicket,
+                ticketTurn: ticketTurn,
                 numbers: formattedNumbers,
-            })
-
-            if(response.status === 201){
-                Alert.alert('Dự đoán đã được lưu!');
+            });
+    
+            if (response.status === 201) {
+                console.log("Ticket turn submitted: ", ticketTurn);
                 setIsConfirmed(true);
             }
         } catch (error) {
             console.error('Error submitting guess: ', error);
-            Alert.alert('Không thể lưu dự đoán, vui lòng thử lại')
+            Alert.alert('Không thể lưu dự đoán, vui lòng thử lại');
         }
     };
+    
 
     useLayoutEffect(() => {
         navigation.setOptions({

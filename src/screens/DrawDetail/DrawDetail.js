@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -13,6 +13,45 @@ const DrawDetailScreen = () => {
     const route = useRoute();
 
     const { result, lotteryData } = route.params;
+
+    const [currentGuess, setCurrentGuess] = useState(null);
+
+    const fetchUserGuessForTicketTurn = async () => {
+        if (!result?.ticketTurn) return;
+    
+        try {
+            const queryParams = new URLSearchParams({
+                ticketType: 'megaSmall',
+                ticketTurn: result.ticketTurn
+            });
+    
+            const response = await fetch(`http://localhost:3000/api/guesses?${queryParams}`);
+    
+            if (!response.ok) {
+                throw new Error(`Error fetching guess: ${response.statusText}`);
+            }
+    
+            const data = await response.json();
+    
+            if (data && Array.isArray(data) && data.length > 0) {
+                setCurrentGuess(data[0]);
+                console.log("Guess: ", data[0]);
+            } else {
+                setCurrentGuess(null);
+                console.log("No guess found for this ticket turn.");
+            }
+        } catch (error) {
+            console.error('Error fetching guess:', error);
+            setGuessError(error.message);
+            setCurrentGuess(null);
+        } finally {
+            setIsLoadingGuess(false);
+        }
+    };
+    
+    useEffect(() => {
+        fetchUserGuessForTicketTurn();
+    }, [result?.ticketTurn]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -116,35 +155,48 @@ const DrawDetailScreen = () => {
                         <Text style={[styles.prizeValue, { flex: 4 }]}>30,000đ</Text>
                     </View>
                 </View>
-                <View style={styles.choosenNumber}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số của bạn chọn</Text>
-                    <View style={styles.userChooseNumber}>
-                        {result.numbers.map((number, index) => (
-                            <View key={index} style={styles.userBall}>
-                                <Text style={styles.userBallText}>
-                                    {number.toString().padStart(2, '0')}
-                                </Text>
+                {currentGuess ? (
+                    <>
+                        <View style={styles.choosenNumber}>
+
+                            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số của bạn chọn</Text>
+                            <View style={styles.userChooseNumber}>
+                                {currentGuess.numbers.map((number, index) => (
+                                    <View key={index} style={styles.userBall}>
+                                        <Text style={styles.userBallText}>
+                                            {number.toString().padStart(2, '0')}
+                                        </Text>
+                                    </View>
+                                ))}
                             </View>
-                        ))}
+                            <View style={{
+                                height: 1,
+                                backgroundColor: '#E09D00',
+                                position: 'absolute',
+                                top: '85%',
+                                width: '110%',
+                                alignSelf: 'center'
+                            }} />
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                                top: '27%'
+                            }}>
+                                <Text>Trùng khớp: </Text>
+                                <Text>Xác suất: <Text style={{ fontWeight: 'bold', color: 'red' }}>0%</Text></Text>
+                            </View>
+
+                        </View>
+                    </>
+                ) : (
+                    <View style={styles.noGuess}>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                            Bạn không có dự đoán nào cho lượt quay này.
+                        </Text>
                     </View>
-                    <View style={{
-                        height: 1,
-                        backgroundColor: '#E09D00',
-                        position: 'absolute',
-                        top: '85%',
-                        width: '110%',
-                        alignSelf: 'center'
-                    }} />
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        top: '27%'
-                    }}>
-                        <Text>Trùng khớp: </Text>
-                        <Text>Xác suất: <Text style={{ fontWeight: 'bold', color: 'red' }}>0%</Text></Text>
-                    </View>
-                </View>
+                )}
+
                 <View style={{
                     backgroundColor: '#FF883A',
                     marginTop: 20,
@@ -317,6 +369,14 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         alignItems: 'center',
         height: 150,
+        padding: 15
+    },
+    noGuess: {
+        width: '97%',
+        backgroundColor: '#FFC91F',
+        borderRadius: 15,
+        overflow: 'hidden',
+        alignItems: 'center',
         padding: 15
     },
     userChooseNumber: {
