@@ -310,7 +310,7 @@ const PowerDetail = () => {
                                         <Text style={styles.ticketTurn}>#{ticket.ticketTurn}</Text>
                                         <Text> - {ticket.drawDate}</Text>
                                     </View>
-                                    <Text style={{ marginRight: 20, color: 'red' }}>></Text>
+                                    <Text style={{ marginRight: 20, color: 'red' }}>{'>'}</Text>
                                 </View>
                                 <View style={styles.divider} />
                                 <View style={styles.olderNumbersContainer}>
