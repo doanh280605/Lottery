@@ -26,7 +26,7 @@ const PowerPredict = ({ numbers }) => {
     
         if (numbersEntered < 6) {
             const remainingNumbers = 6 - numbersEntered;
-            const remainingCombinations = calculateCombinations(45 - numbersEntered, remainingNumbers);
+            const remainingCombinations = calculateCombinations(55 - numbersEntered, remainingNumbers);
         
             const prob = (remainingNumbers / remainingCombinations) * 100;
         

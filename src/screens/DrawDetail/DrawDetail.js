@@ -29,7 +29,6 @@ const DrawDetailScreen = () => {
     
             // Log the full URL with query params to ensure it's correct
             const url = `http://localhost:3000/api/guesses?${queryParams}`;
-            console.log('Request URL:', url);
     
             const response = await fetch(url);
     
@@ -61,6 +60,65 @@ const DrawDetailScreen = () => {
     useEffect(() => {
         fetchUserGuessForTicketTurn();
     }, [result?.ticketTurn]);
+
+    const calculateCombinations = (n, k) => {
+        if (k === 0 || k === n) return 1;
+        return (n * calculateCombinations(n - 1, k - 1)) / k;
+    };
+    
+    const compareNumbers = (userGuess, actualResult) => {
+        if (!userGuess || !actualResult) {
+            return {
+                matches: [],
+                probability: '0'
+            };
+        }
+    
+        // Find matching numbers
+        const matches = userGuess.numbers.filter(number => 
+            actualResult.numbers.includes(number)
+        );
+    
+        const numbersEntered = matches.length;
+    
+        // If all 6 numbers match, probability is 100%
+        if (numbersEntered === 6) {
+            return {
+                matches,
+                probability: '100'
+            };
+        }
+    
+        // Explicitly handle the case where there are no matches
+        if (numbersEntered === 0) {
+            return {
+                matches,
+                probability: '0'
+            };
+        }
+    
+        const remainingNumbers = 6 - numbersEntered;
+        const remainingCombinations = calculateCombinations(45 - numbersEntered, remainingNumbers);
+    
+        // Recalculate probability based on unmatched numbers
+        const prob = (remainingNumbers / remainingCombinations) * 100;
+        const formattedProb = prob.toFixed(5).replace(/\.?0+$/, '');
+    
+        return {
+            matches,
+            probability: formattedProb
+        };
+    };   
+
+    useEffect(() => {
+        if (currentGuess && result) {
+            const { matches, probability } = compareNumbers(currentGuess, result);
+            console.log("Matches:", matches);
+            console.log("Probability:", probability);
+        }
+    }, [currentGuess, result]);
+    
+    const { matches, probability } = compareNumbers(currentGuess, result);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -192,8 +250,18 @@ const DrawDetailScreen = () => {
                                 width: '100%',
                                 top: '27%'
                             }}>
-                                <Text>Trùng khớp: </Text>
-                                <Text>Xác suất: <Text style={{ fontWeight: 'bold', color: 'red' }}>0%</Text></Text>
+                                <Text>Trùng khớp: 
+                                    {matches.length > 0 ? (
+                                        matches.map((num, index) => (
+                                            <Text key={index} style={{ fontWeight: 'bold', color: 'red' }}>
+                                                {index > 0 ? `, ${num}` : num}
+                                            </Text>
+                                        ))
+                                    ) : (
+                                        <Text style={{ fontWeight: 'bold', color: 'red' }}> Không có</Text>
+                                    )}
+                                </Text>
+                                <Text>Xác suất: <Text style={{ fontWeight: 'bold', color: 'red' }}>{probability}%</Text></Text>
                             </View>
 
                         </View>
