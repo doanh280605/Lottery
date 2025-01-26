@@ -41,67 +41,6 @@ const SettingScreen = () => {
             </TouchableOpacity>
 
             <View style={styles.divider} />
-
-            <View style={styles.item}>
-                <Image source={require('../../../assets/Eye.png')} style={styles.icon} />
-                <Text style={styles.text}>Giao Diện</Text>
-                <Switch
-                    value={isDarkMode}
-                    onValueChange={toggleTheme}
-                    disabled={false}
-                    circleSize={30}
-                    barHeight={32}
-                    backgroundActive={'#D9112A'}
-                    backgroundInactive={'#767577'}
-                    circleActiveColor={'#ffffff'}
-                    circleInActiveColor={'#f4f3f4'}
-                    changeValueImmediately={true}
-                    innerCircleStyle={{ alignItems: "center", justifyContent: "center" }}
-                    switchWidthMultiplier={2}
-                    switchBorderRadius={16}
-                    switchLeftPx={15} // denominator for logic when sliding to TRUE position. Higher number = more space from RIGHT of the circle to END of the slider
-                    switchRightPx={19}
-                    renderActiveText={true}
-                    renderInActiveText={true}
-                />
-            </View>
-
-            <View style={[styles.item, { marginTop: 1 }]}>
-                <Image source={require('../../../assets/Language.png')} style={styles.icon} />
-                <Text style={styles.text}>Ngôn Ngữ</Text>
-
-                <Switch
-                    value={isVietnamese}
-                    onValueChange={toggleLanguage}
-                    disabled={false}
-                    activeText={'VN'}
-                    inActiveText={'EN'}
-                    circleSize={30}
-                    barHeight={32}
-                    backgroundActive={'#D9112A'}
-                    backgroundInactive={'#767577'}
-                    circleActiveColor={'#ffffff'}
-                    circleInActiveColor={'#f4f3f4'}
-                    changeValueImmediately={true}
-                    innerCircleStyle={{ alignItems: "center", justifyContent: "center" }}
-                    switchWidthMultiplier={2}
-                    switchBorderRadius={16}
-                    switchLeftPx={15} // denominator for logic when sliding to TRUE position. Higher number = more space from RIGHT of the circle to END of the slider
-                    switchRightPx={8}
-                    renderActiveText={true}
-                    renderInActiveText={true}
-                    activeTextStyle={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: '#ffffff'
-                    }}
-                    inactiveTextStyle={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: '#ffffff'
-                    }}
-                />
-            </View>
         </View>
     );
 };
@@ -119,7 +58,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         backgroundColor: 'white',
         paddingHorizontal: 15,
-        bottom: '34%'
+        bottom: '42%'
     },
     icon: {
         width: 24,

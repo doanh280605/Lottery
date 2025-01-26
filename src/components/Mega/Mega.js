@@ -184,7 +184,7 @@ const Mega = () => {
               <Text style={styles.ticketTurn}>#{result.ticketTurn}</Text>
               <Text> - {result.drawDate}</Text>
             </View>
-            <Text style={{ marginRight: 20, color: 'red' }}>></Text>
+            <Text style={{ marginRight: 20, color: 'red' }}>{'>'}</Text>
           </View>
 
           <View style={styles.divider} />

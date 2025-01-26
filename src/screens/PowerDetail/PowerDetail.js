@@ -120,6 +120,7 @@ const PowerDetail = () => {
         });
     }, [navigation, result.ticketTurn]);
 
+    const { matches, probability } = compareNumbers(currentGuess, result);
 
     return (
         <ScrollView style={styles.scrollView}>
@@ -170,8 +171,8 @@ const PowerDetail = () => {
                         <Text style={[styles.prizeType, { flex: 2 }]}>Jackpot 1</Text>
                         <View style={[styles.matchDotsContainer, { flex: 3 }]}>
                             <View style={styles.matchDots}>
-                                {[...Array(6)].map((_, i) => (
-                                    <View key={i} style={[styles.dot, i === 5 ? styles.dotFilled : null]} />
+                                {[...Array(7)].map((_, i) => (
+                                    <View key={i} style={[styles.dot, i === 5 ? styles.dotMatched : styles.dotUnmatched]} />
                                 ))}
                             </View>
                         </View>
@@ -182,8 +183,8 @@ const PowerDetail = () => {
                         <Text style={[styles.prizeType, { flex: 2 }]}>Jackpot 2</Text>
                         <View style={[styles.matchDotsContainer, { flex: 3 }]}>
                             <View style={styles.matchDots}>
-                                {[...Array(6)].map((_, i) => (
-                                    <View key={i} style={[styles.dot, i === 5 ? styles.dotFilled : null]} />
+                                {[...Array(7)].map((_, i) => (
+                                    <View key={i} style={[styles.dot, i === 5 ? styles.dotMatched : styles.dotUnmatched]} />
                                 ))}
                             </View>
                         </View>
@@ -196,7 +197,7 @@ const PowerDetail = () => {
                         <View style={[styles.matchDotsContainer, { flex: 3 }]}>
                             <View style={styles.matchDots}>
                                 {[...Array(5)].map((_, i) => (
-                                    <View key={i} style={[styles.dot, i >= 3 ? styles.dotFilled : null]} />
+                                    <View key={i} style={[styles.dot, i >= 3 ? styles.dotMatched : styles.dotUnmatched]} />
                                 ))}
                             </View>
                         </View>
