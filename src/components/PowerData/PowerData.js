@@ -33,7 +33,7 @@ const PowerData = () => {
 
     const fetchLotteryResults = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/power-result');
+            const response = await fetch('http://192.168.1.52:3000/api/power-result');
             const responseData = await response.json();
 
             if (responseData && Array.isArray(responseData)) {
@@ -55,7 +55,7 @@ const PowerData = () => {
 
     const fetchAllGuesses = async (ticketType) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/allguess?ticketType=${ticketType}`);
+            const response = await fetch(`http://192.168.1.52:3000/api/allguess?ticketType=${ticketType}`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch guesses');

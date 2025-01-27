@@ -28,7 +28,7 @@ const DrawDetailScreen = () => {
             });
     
             // Log the full URL with query params to ensure it's correct
-            const url = `http://localhost:3000/api/guesses?${queryParams}`;
+            const url = `http://192.168.1.52:3000/api/guesses?${queryParams}`;
     
             const response = await fetch(url);
     

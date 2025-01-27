@@ -25,7 +25,7 @@ const PowerDetail = () => {
                 ticketTurn: result.ticketTurn
             });
     
-            const response = await fetch(`http://localhost:3000/api/guesses?${queryParams}`);
+            const response = await fetch(`http://192.168.1.52:3000/api/guesses?${queryParams}`);
     
             if (!response.ok) {
                 throw new Error(`Error fetching guess: ${response.statusText}`);

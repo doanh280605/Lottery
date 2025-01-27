@@ -9,7 +9,7 @@ const LeastFrequent = () => {
   const fetchLotteryResults = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/power-result');
+      const response = await fetch('http://192.168.1.52:3000/api/power-result');
       const contentType = response.headers.get('Content-Type');
 
       if (!response.ok) {

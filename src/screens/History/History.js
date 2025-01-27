@@ -31,7 +31,7 @@ const History = () => {
     const fetchPredictions = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/prediction/history?ticketType=${selectedTicket}`);
+            const response = await fetch(`http://192.168.1.52:3000/api/prediction/history?ticketType=${selectedTicket}`);
 
             if (!response.ok) {
                 const errorText = await response.text();

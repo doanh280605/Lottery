@@ -9,7 +9,7 @@ const LeastFrequentTable = () => {
   const fetchLotteryResults = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/lottery-result');
+      const response = await fetch('http://192.168.1.52:3000/api/lottery-result');
       const contentType = response.headers.get('Content-Type');
 
       if (!response.ok) {

@@ -19,7 +19,7 @@ import vector from '../../../assets/Vector_18.png'
 
 const Tab = createBottomTabNavigator();
 const size = 30;
-const RSS_URL = 'http://localhost:3000/api/rss';
+const RSS_URL = 'http://192.168.1.52:3000/api/rss';
 const deviceWidth = Dimensions.get('window').width;
 
 const AnimatedText = ({ value }) => {
@@ -111,7 +111,7 @@ const HomeScreen = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/vietlottnews');
+                const response = await fetch('http://192.168.1.52:3000/api/vietlottnews');
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

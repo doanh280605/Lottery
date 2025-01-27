@@ -32,7 +32,7 @@ const MegaData = () => {
 
     const fetchLotteryResults = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/lottery-result');
+            const response = await fetch('http://192.168.1.52:3000/api/lottery-result');
             const responseData = await response.json();
 
             if (responseData && Array.isArray(responseData)) {
@@ -54,7 +54,7 @@ const MegaData = () => {
 
     const fetchAllGuesses = async (ticketType) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/allguess?ticketType=${ticketType}`);
+            const response = await fetch(`http://192.168.1.52:3000/api/allguess?ticketType=${ticketType}`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch guesses');

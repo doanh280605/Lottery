@@ -40,7 +40,7 @@ const PowerPredict = ({ numbers }) => {
     const fetchLotteryResults = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/power-result');
+            const response = await fetch('http://192.168.1.52:3000/api/power-result');
             const contentType = response.headers.get('Content-Type');
     
             if (!response.ok) {
@@ -91,7 +91,7 @@ const PowerPredict = ({ numbers }) => {
         }
     
         try {
-            const response = await fetch('http://localhost:3000/api/prediction', {
+            const response = await fetch('http://192.168.1.52:3000/api/prediction', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

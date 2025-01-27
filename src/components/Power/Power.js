@@ -12,7 +12,7 @@ const Power = ({ }) => {
     const fetchPowerLotteryResults = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/power-result');
+            const response = await fetch('http://192.168.1.52:3000/api/power-result');
             const responseData = await response.json();
 
             if (responseData && Array.isArray(responseData)) {
@@ -219,7 +219,7 @@ const Power = ({ }) => {
                             <Text style={styles.ticketTurn}>#{result.ticketTurn}</Text>
                             <Text> - {result.drawDate}</Text>
                         </View>
-                        <Text style={{ marginRight: 20, color: 'red' }}>></Text>
+                        <Text style={{ marginRight: 20, color: 'red' }}>{'>'}</Text>
                     </View>
 
                     <View style={styles.divider} />

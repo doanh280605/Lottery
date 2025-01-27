@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 
@@ -20,8 +20,8 @@ const DiceScreen = () => {
     const navigation = useNavigation();
 
     const ticketOptions = [
-        { id: 'megaSmall', source: megaSmall, highResSource: megaBig, apiUrl: 'http://localhost:3000/api/lottery-result' },
-        { id: 'power', source: power, highResSource: powerBig, apiUrl: 'http://localhost:3000/api/power-result' },
+        { id: 'megaSmall', source: megaSmall, highResSource: megaBig, apiUrl: 'http://192.168.1.52:3000/api/lottery-result' },
+        { id: 'power', source: power, highResSource: powerBig, apiUrl: 'http://192.168.1.52:3000/api/power-result' },
     ];
 
     const [selectedTicket, setSelectedTicket] = useState(ticketOptions[0]?.id);
@@ -55,38 +55,38 @@ const DiceScreen = () => {
         setIsNumberEntered(updateNumbers.some(num => num !== ''));
     }
 
-    const fetchLotteryResults = async (selectedTicketId) => {  
+    const fetchLotteryResults = async (selectedTicketId) => {
         try {
             const selectedTicket = ticketOptions.find(ticket => ticket.id === selectedTicketId);
-            
+
             if (!selectedTicket) {
                 throw new Error('Invalid ticket selection');
             }
-    
+
             const response = await fetch(selectedTicket.apiUrl);
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-    
+
             const responseData = await response.json();
-    
+
             if (!Array.isArray(responseData) || responseData.length === 0) {
                 throw new Error('No lottery data available');
             }
-    
+
             const latestTicket = responseData[0];
-            
+
             if (!latestTicket?.ticketTurn) {
                 throw new Error('Invalid ticket data - missing ticketTurn');
             }
-    
+
             // Calculate next ticket turn
             const currentTurn = parseInt(latestTicket.ticketTurn, 10);
             const nextTicketTurn = (currentTurn + 1).toString().padStart(5, '0');
-            
+
             setTicketTurn(nextTicketTurn);
-    
+
         } catch (error) {
             console.error('Error in fetchLotteryResults:', error.message);
             setError(error.message);
@@ -95,30 +95,30 @@ const DiceScreen = () => {
             setLoading(false);
         }
     };
-    
+
     useEffect(() => {
         if (selectedTicket) {
             fetchLotteryResults(selectedTicket);
         }
     }, [selectedTicket]);
-    
+
 
     // Handle form submission
-    const handleSubmit = async () => {    
+    const handleSubmit = async () => {
         const formattedNumbers = numbers.filter(num => num !== '').map(num => parseInt(num, 10));
-    
+
         if (formattedNumbers.length === 0) {
             Alert.alert('Vui lòng nhập ít nhất 1 số');
             return;
         }
-    
+
         try {
             const response = await axios.post('http://localhost:3000/api/guess', {
                 ticketType: selectedTicket,
                 ticketTurn: ticketTurn,
                 numbers: formattedNumbers,
             });
-    
+
             if (response.status === 201) {
                 console.log("Ticket turn submitted: ", ticketTurn);
                 setIsConfirmed(true);
@@ -128,7 +128,7 @@ const DiceScreen = () => {
             Alert.alert('Không thể lưu dự đoán, vui lòng thử lại');
         }
     };
-    
+
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -151,78 +151,78 @@ const DiceScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={[styles.chooseNumberContainer, isConfirmed && styles.expandedContainer]}>
-                {/* Title */}
-                {!isConfirmed && (
-                    <>
-                        <Text style={styles.title}>Chọn loại vé</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View style={styles.container}>
+                <View style={[styles.chooseNumberContainer, isConfirmed && styles.expandedContainer]}>
+                    {/* Title */}
+                    {!isConfirmed && (
+                        <>
+                            <Text style={styles.title}>Chọn loại vé</Text>
+                            <View style={styles.selector}>
+                                {ticketOptions.map((ticket) => (
+                                    <TouchableOpacity
+                                        key={ticket.id}
+                                        onPress={() => handleSelect(ticket.id)}
+                                        style={[
+                                            styles.imageWrapper,
+                                            selectedTicket === ticket.id && styles.selectedImageWrapper,
+                                            (ticket.id === 'vietlott' || ticket.id === 'power') && { marginTop: 3 },
+                                        ]}
+                                    >
+                                        <Image source={ticket.source} style={styles.icon} />
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </>
+                    )}
 
-                        <View style={styles.selector}>
-                            {ticketOptions.map((ticket) => (
-                                <TouchableOpacity
-                                    key={ticket.id}
-                                    onPress={() => handleSelect(ticket.id)}
-                                    style={[
-                                        styles.imageWrapper,
-                                        selectedTicket === ticket.id && styles.selectedImageWrapper,
-                                        (ticket.id === 'vietlott' || ticket.id === 'power') && { marginTop: 3 },
-                                    ]}
-                                >
-                                    <Image source={ticket.source} style={styles.icon} />
-                                </TouchableOpacity>
-                            ))}
+                    {/* Divider */}
+                    <View style={styles.divider} />
+
+                    {selectedTicket && (
+                        <View style={styles.selectedTicketContainer}>
+                            <Image
+                                source={ticketOptions.find((ticket) => ticket.id === selectedTicket)?.highResSource}
+                                style={styles.selectedTicketImage}
+                            />
                         </View>
-                    </>
-                )}
+                    )}
 
-                {/* Divider */}
-                <View style={styles.divider} />
-
-                {selectedTicket && (
-                    <View style={styles.selectedTicketContainer}>
-                        <Image
-                            source={ticketOptions.find((ticket) => ticket.id === selectedTicket)?.highResSource}
-                            style={styles.selectedTicketImage}
-                        />
+                    {/* Number Input */}
+                    <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: 15 }}>
+                        Số của bạn chọn
+                    </Text>
+                    <View style={styles.numberInputContainer}>
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <TextInput
+                                key={index}
+                                style={styles.numberInput}
+                                keyboardType="numeric"
+                                maxLength={2}
+                                textAlign="center"
+                                value={numbers[index]}
+                                onChangeText={(text) => handleInputChange(text, index)}
+                                editable={!isConfirmed}
+                            />
+                        ))}
                     </View>
-                )}
 
-                {/* Number Input */}
-                <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginTop: 15 }}>
-                    Số của bạn chọn
-                </Text>
-                <View style={styles.numberInputContainer}>
-                    {Array.from({ length: 6 }).map((_, index) => (
-                        <TextInput
-                            key={index}
-                            style={styles.numberInput}
-                            keyboardType="numeric"
-                            maxLength={2}
-                            textAlign="center"
-                            value={numbers[index]}
-                            onChangeText={(text) => handleInputChange(text, index)}
-                            editable={!isConfirmed}
-                        />
-                    ))}
+                    {/* Submit Button */}
+                    {!isConfirmed && (
+                        <TouchableOpacity
+                            onPress={handleSubmit}
+                            style={[styles.button, { backgroundColor: isNumberEntered ? '#D9112A' : '#B0B0B0' }]}
+                            disabled={!isNumberEntered}
+                        >
+                            <Text style={styles.buttonText}>XÁC NHẬN</Text>
+                        </TouchableOpacity>
+                    )}
+
+                    {/* Prediction Component */}
+                    {isConfirmed && renderPredictionComponent()}
                 </View>
-
-                {/* Submit Button */}
-                {!isConfirmed && (
-                    <TouchableOpacity
-                        onPress={handleSubmit}
-                        style={[styles.button, { backgroundColor: isNumberEntered ? '#D9112A' : '#B0B0B0' }]}
-                        disabled={!isNumberEntered}
-                    >
-                        <Text style={styles.buttonText}>XÁC NHẬN</Text>
-                    </TouchableOpacity>
-                )}
-
-                {/* Prediction Component */}
-                {isConfirmed && renderPredictionComponent()}
             </View>
-
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     },
     button: {
         position: 'absolute',
-        top: '123%',
+        top: 570,
         left: '2.5%',
         right: '2.5%',
         borderRadius: 15,

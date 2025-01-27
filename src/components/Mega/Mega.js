@@ -11,7 +11,7 @@ const Mega = () => {
   const fetchLotteryResults = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/lottery-result');
+      const response = await fetch('http://192.168.1.52:3000/api/lottery-result');
       const responseData = await response.json();
 
       if (responseData && Array.isArray(responseData)) {
