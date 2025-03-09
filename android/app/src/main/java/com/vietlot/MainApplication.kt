@@ -10,6 +10,9 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
+// Remove these imports as they're not needed with the new architecture
+// import com.facebook.react.bridge.JSIModulePackage
+// import com.swmansion.reanimated.ReanimatedJSIModulePackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -27,6 +30,9 @@ class MainApplication : Application(), ReactApplication {
 
         override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+        
+        // Remove this method as it's not needed with the new architecture
+        // override fun getJSIModulePackage(): JSIModulePackage = ReanimatedJSIModulePackage()
       }
 
   override val reactHost: ReactHost
