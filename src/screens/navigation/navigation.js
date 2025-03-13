@@ -9,7 +9,7 @@ import Data from "../Data";
 import History from "../History";
 const Stack = createNativeStackNavigator();
 
-export default function Navigation() {
+export default function Navigation({userId}) {
 
     return (
         <NavigationContainer>
@@ -41,6 +41,7 @@ export default function Navigation() {
                 <Stack.Screen
                     name="data"
                     component={Data}
+                    initialParams={{userId: userId}}
                     options={{ headerShown: true,
                                headerBackTitleVisible: false,
                                headerStyle: {
@@ -52,6 +53,7 @@ export default function Navigation() {
                 <Stack.Screen
                     name="history"
                     component={History}
+                    initialParams={{userId: userId}}
                     options={{ headerShown: true,
                                headerBackTitleVisible: false,
                                headerStyle: {

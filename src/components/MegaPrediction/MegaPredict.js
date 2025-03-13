@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MegaPredict = ({ numbers }) => {
     const [predictedNumbers, setPredictedNumbers] = useState([]);
@@ -85,6 +86,7 @@ const MegaPredict = ({ numbers }) => {
     };
     
     const savePredictionToDB = async (predictedNumbers, turn) => {
+        const userId = await AsyncStorage.getItem('app_user_id');
         if (!turn) {
             console.error('No valid ticket turn available');
             return;
@@ -97,6 +99,7 @@ const MegaPredict = ({ numbers }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    userId,
                     ticketType: 'mega',
                     ticketTurn: turn,
                     predictedNumbers,
@@ -106,7 +109,7 @@ const MegaPredict = ({ numbers }) => {
             if (response.ok) {
                 console.log('Successfully saved prediction with ticket turn:', turn);
             } else {
-                throw new Error('Failed to save prediction');
+                throw new Error('Failed to save prediction');1
             }
         } catch (error) {
             console.error('Error saving prediction:', error);

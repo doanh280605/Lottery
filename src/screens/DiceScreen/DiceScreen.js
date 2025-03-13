@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState, useCallback, useEffect } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import PowerPredict from '../../components/PowerPrediction/PowerPredict';
 import MegaPredict from '../../components/MegaPrediction/MegaPredict';
@@ -112,8 +113,11 @@ const DiceScreen = () => {
             return;
         }
 
+        const userId = await AsyncStorage.getItem('app_user_id');
+
         try {
             const response = await axios.post('http://localhost:3000/api/guess', {
+                userId,
                 ticketType: selectedTicket,
                 ticketTurn: ticketTurn,
                 numbers: formattedNumbers,
