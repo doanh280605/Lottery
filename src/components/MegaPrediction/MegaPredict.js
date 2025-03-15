@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../../utils/config';
 
 const MegaPredict = ({ numbers }) => {
     const [predictedNumbers, setPredictedNumbers] = useState([]);
@@ -41,7 +42,7 @@ const MegaPredict = ({ numbers }) => {
     const fetchLotteryResults = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://192.168.1.52:3000/api/lottery-result');
+            const response = await fetch(`${API_URL}/lottery-result`);
             const contentType = response.headers.get('Content-Type');
     
             if (!response.ok) {
@@ -93,7 +94,7 @@ const MegaPredict = ({ numbers }) => {
         }
     
         try {
-            const response = await fetch('http://192.168.1.52:3000/api/prediction', {
+            const response = await fetch(`${API_URL}/prediction`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

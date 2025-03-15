@@ -6,6 +6,7 @@ import { XMLParser } from "fast-xml-parser";
 import Carousel from "react-native-reanimated-carousel";
 import 'react-native-gesture-handler';
 import axios from "axios";
+import API_URL from "../../utils/config";
 
 import DiceScreen from "../DiceScreen";
 import SettingScreen from "../SettingScreen";
@@ -19,7 +20,7 @@ import vector from '../../../assets/Vector_18.png'
 
 const Tab = createBottomTabNavigator();
 const size = 30;
-const RSS_URL = 'http://192.168.1.52:3000/api/rss';
+const RSS_URL = `${API_URL}/rss`;
 const deviceWidth = Dimensions.get('window').width;
 
 const AnimatedText = ({ value }) => {
@@ -111,7 +112,7 @@ const HomeScreen = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await fetch('http://192.168.1.52:3000/api/vietlottnews');
+                const response = await fetch(`${API_URL}/vietlottnews`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import API_URL from '../../utils/config';
 
 import ticket from '../../../assets/ticket.png'
 import vietlott from '../../../assets/vietloff.png'
@@ -25,7 +26,7 @@ const PowerDetail = () => {
                 ticketTurn: result.ticketTurn
             });
     
-            const response = await fetch(`http://192.168.1.52:3000/api/guesses?${queryParams}`);
+            const response = await fetch(`${API_URL}/guesses?${queryParams}`);
     
             if (!response.ok) {
                 throw new Error(`Error fetching guess: ${response.statusText}`);

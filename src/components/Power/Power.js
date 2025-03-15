@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { registerLoggerConfig } from "react-native-reanimated/lib/typescript/logger";
+import API_URL from "../../utils/config";
 
 const Power = ({ }) => {
     const [lotteryData, setLotteryData] = useState([]);
@@ -12,7 +13,7 @@ const Power = ({ }) => {
     const fetchPowerLotteryResults = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://192.168.1.52:3000/api/power-result');
+            const response = await fetch(`${API_URL}/power-result`);
             const responseData = await response.json();
 
             if (responseData && Array.isArray(responseData)) {

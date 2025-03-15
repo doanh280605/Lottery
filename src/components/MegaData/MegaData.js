@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
+import API_URL from '../../utils/config';
 
 import MostFrequentTable from './MostFrequent/MostFrequentTable';
 import LeastFrequentTable from './LeastFrequent/LeastFrequentTable';
@@ -32,7 +33,7 @@ const MegaData = () => {
 
     const fetchLotteryResults = async () => {
         try {
-            const response = await fetch('http://192.168.1.52:3000/api/lottery-result');
+            const response = await fetch(`${API_URL}/lottery-result`);
             const responseData = await response.json();
 
             if (responseData && Array.isArray(responseData)) {
@@ -54,7 +55,7 @@ const MegaData = () => {
 
     const fetchAllGuesses = async (ticketType) => {
         try {
-            const response = await fetch(`http://192.168.1.52:3000/api/allguess?ticketType=${ticketType}`);
+            const response = await fetch(`${API_URL}/allguess?ticketType=${ticketType}`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch guesses');

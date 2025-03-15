@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Keyb
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../../utils/config';
 
 import PowerPredict from '../../components/PowerPrediction/PowerPredict';
 import MegaPredict from '../../components/MegaPrediction/MegaPredict';
@@ -21,8 +22,8 @@ const DiceScreen = () => {
     const navigation = useNavigation();
 
     const ticketOptions = [
-        { id: 'megaSmall', source: megaSmall, highResSource: megaBig, apiUrl: 'http://192.168.1.52:3000/api/lottery-result' },
-        { id: 'power', source: power, highResSource: powerBig, apiUrl: 'http://192.168.1.52:3000/api/power-result' },
+        { id: 'megaSmall', source: megaSmall, highResSource: megaBig, apiUrl: `${API_URL}/lottery-result` },
+        { id: 'power', source: power, highResSource: powerBig, apiUrl: `${API_URL}/power-result` },
     ];
 
     const [selectedTicket, setSelectedTicket] = useState(ticketOptions[0]?.id);
@@ -116,7 +117,7 @@ const DiceScreen = () => {
         const userId = await AsyncStorage.getItem('app_user_id');
 
         try {
-            const response = await axios.post('http://192.168.1.52:3000/api/guess', {
+            const response = await axios.post(`${API_URL}/guess`, {
                 userId,
                 ticketType: selectedTicket,
                 ticketTurn: ticketTurn,

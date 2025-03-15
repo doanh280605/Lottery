@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import API_URL from '../../utils/config';
 
 import ticket from '../../../assets/ticket.png'
 import vietlott from '../../../assets/vietloff.png'
@@ -28,7 +29,7 @@ const DrawDetailScreen = () => {
             });
     
             // Log the full URL with query params to ensure it's correct
-            const url = `http://192.168.1.52:3000/api/guesses?${queryParams}`;
+            const url = `${API_URL}/guesses?${queryParams}`;
     
             const response = await fetch(url);
     

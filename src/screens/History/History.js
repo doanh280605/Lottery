@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState, useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from "../../utils/config";
 
 import mega from '../../../assets/mega.png'
 import power from '../../../assets/power.png'
@@ -33,7 +34,7 @@ const History = () => {
         setLoading(true);
         try {
             const userId = await AsyncStorage.getItem('app_user_id');
-            const response = await fetch(`http://192.168.1.52:3000/api/prediction/history?ticketType=${selectedTicket}&userId=${userId}`);
+            const response = await fetch(`${API_URL}/prediction/history?ticketType=${selectedTicket}&userId=${userId}`);
 
             if (!response.ok) {
                 const errorText = await response.text();

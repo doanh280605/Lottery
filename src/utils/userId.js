@@ -2,10 +2,11 @@ import 'react-native-get-random-values';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import API_URL from './config';
 
 // Key for storing user ID in AsyncStorage
 const USER_ID_KEY = 'app_user_id';
-const API_URL = 'http://192.168.1.52:3000/api/createUser';
+const API_URL = `${API_URL}/api/createUser`;
 
 // Get the user ID from AsyncStorage, or generate a new one if it doesn't exist
 export const getUserId = async () => {

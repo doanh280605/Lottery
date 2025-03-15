@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import API_URL from '../../../utils/config';
 
 const NotAppeared = () => {
   const [data, setData] = useState([]);
@@ -9,7 +10,7 @@ const NotAppeared = () => {
   const fetchLotteryResults = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://192.168.1.52:3000/api/power-result');
+      const response = await fetch(`${API_URL}/power-result`);
       const contentType = response.headers.get('Content-Type');
 
       if (!response.ok) {
