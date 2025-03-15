@@ -116,7 +116,7 @@ const DiceScreen = () => {
         const userId = await AsyncStorage.getItem('app_user_id');
 
         try {
-            const response = await axios.post('http://localhost:3000/api/guess', {
+            const response = await axios.post('http://192.168.1.52:3000/api/guess', {
                 userId,
                 ticketType: selectedTicket,
                 ticketTurn: ticketTurn,

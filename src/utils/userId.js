@@ -5,7 +5,7 @@ import axios from 'axios';
 
 // Key for storing user ID in AsyncStorage
 const USER_ID_KEY = 'app_user_id';
-const API_URL = 'http://localhost:3000/api/createUser';
+const API_URL = 'http://192.168.1.52:3000/api/createUser';
 
 // Get the user ID from AsyncStorage, or generate a new one if it doesn't exist
 export const getUserId = async () => {

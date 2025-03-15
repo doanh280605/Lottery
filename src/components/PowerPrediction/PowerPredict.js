@@ -354,6 +354,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginVertical: 10,
         fontSize: 12,
+        bottom: 5
     },
     retryButton: {
         backgroundColor: '#007BFF',
@@ -365,7 +366,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderColor: '#D9112A',
-        bottom: '12%'
+        bottom: '20%'
     },
     disabledButton: {
         backgroundColor: 'white',

@@ -353,18 +353,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginVertical: 10,
         fontSize: 12,
+        bottom: 5
     },
     retryButton: {
         backgroundColor: '#007BFF',
         padding: 15,
-        borderRadius: 5,
+        borderRadius: 10,
         alignItems: 'center',
         marginVertical: 10,
         width: 350,
         backgroundColor: 'white',
         borderWidth: 1,
         borderColor: '#D9112A',
-        bottom: '12%'
+        bottom: '20%'
     },
     disabledButton: {
         backgroundColor: 'white',
