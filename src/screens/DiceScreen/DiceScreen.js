@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     },
     button: {
         position: 'absolute',
-        top: 570,
+        bottom: '-15%',
         left: '2.5%',
         right: '2.5%',
         borderRadius: 15,

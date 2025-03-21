@@ -3,6 +3,18 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'rea
 import { useNavigation } from "@react-navigation/native";
 import API_URL from "../../utils/config";
 
+const commonStyles = StyleSheet.create({
+  ticketContainer: {
+    backgroundColor: 'white',
+    marginVertical: 10,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    overflow: 'hidden',
+    height: 420,
+    justifyContent: 'center',
+  },
+});
+
 const Mega = () => {
   const [lotteryData, setLotteryData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,18 +70,7 @@ const Mega = () => {
   const renderLatestResult = () => {
     if(loading){
       return (
-        <View style={{
-              backgroundColor: 'white',
-              marginVertical: 10,
-              borderBottomLeftRadius: 15,
-              borderBottomRightRadius: 15,
-              elevation: 3,
-              overflow: 'hidden',
-              height: 420,
-              bottom: 9,
-              width: 350,
-              justifyContent: 'center',
-        }}>
+        <View style={commonStyles.ticketContainer}>
           <ActivityIndicator size="large" color="black" />
         </View>
       )
@@ -223,8 +224,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     overflow: 'hidden',
     height: 420,
-    bottom: 1,
-    width: 350
   },
   headerContainer: {
     backgroundColor: '#D30010',
@@ -337,7 +336,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 10,
     elevation: 2,
-    height: 120
+    height: 120, 
   },
   kyve: {
     flexDirection: 'row',
@@ -355,8 +354,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   olderBall: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     borderRadius: 20,
     backgroundColor: '#FFA500',
     justifyContent: 'center',
@@ -365,7 +364,7 @@ const styles = StyleSheet.create({
   },
   olderBallText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   divider: {

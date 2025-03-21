@@ -40,13 +40,14 @@ const LotteryDisplay = () => {
             </View>
           </TouchableOpacity>
         </View>
-
-        {/* Mega or Power Content */}
-        {selectedTicket === 'mega' ? (
-          <Mega />
-        ) : (
-          <Power />
-        )}
+        
+        <View style={styles.ticketContainer}>
+          {selectedTicket === 'mega' ? (
+            <Mega />
+          ) : (
+            <Power />
+          )}
+        </View>
 
       </View>
 
@@ -60,18 +61,7 @@ const styles = StyleSheet.create({
   resultsContainer: {
     flex: 1,
     paddingHorizontal: 10,
-  },
-  olderTicketContainer: {
-    backgroundColor: 'white',
-    marginVertical: 10,
-    borderRadius: 10,
-    elevation: 2,
-    height: 120
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%'
   },
   errorContainer: {
     padding: 20,
@@ -91,11 +81,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    paddingHorizontal: 80,
-    top: '2%',
-    borderBottomWidth: 4,
-    borderBottomColor: '#E0E0E0',
-    width: 350,
+    paddingHorizontal: 80 ,
   },
   selectionIndicator: {
     borderRadius: 10,
@@ -109,6 +95,18 @@ const styles = StyleSheet.create({
   },
   latestTicketContainer: {
     backgroundColor: 'transparent',
+    width: '100%',
+    overflow: 'hidden'
+  },
+  ticketContainer: {
+    marginVertical: 0,
+    marginTop: -20,
+    borderBottomLeftRadius: 15, 
+    borderBottomRightRadius: 15, 
+    elevation: 3, 
+    overflow: 'hidden',
+    width: '100%',
+    justifyContent: 'center'
   },
   more: {
     fontSize: 18,

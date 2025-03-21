@@ -72,16 +72,13 @@ const Power = ({ }) => {
         if(loading){
             return (
               <View style={{
-                    backgroundColor: 'white',
-                    marginVertical: 10,
-                    borderBottomLeftRadius: 15,
-                    borderBottomRightRadius: 15,
-                    elevation: 3,
-                    overflow: 'hidden',
-                    height: 458,
-                    bottom: 8,
-                    width: 350,
-                    justifyContent: 'center',
+                backgroundColor: 'white',
+                marginVertical: 10,
+                borderBottomLeftRadius: 15,
+                borderBottomRightRadius: 15,
+                overflow: 'hidden',
+                height: 458,
+                justifyContent: 'center',
               }}>
                 <ActivityIndicator size="large" color="black" />
               </View>
@@ -255,6 +252,7 @@ const styles = StyleSheet.create({
     },
     latestTicketContainer: {
         backgroundColor: 'white',
+        marginVertical: 10,
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
         elevation: 3,
@@ -264,9 +262,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         overflow: 'hidden',
         height: 458,
-        marginTop: 10,
-        width: 350
-    },
+      },
     headerContainer: {
         backgroundColor: '#D30010',
         padding: 15,
@@ -297,8 +293,8 @@ const styles = StyleSheet.create({
         paddingBottom: 15
     },
     latestBall: {
-        width: 35,
-        height: 35,
+        width: 40,
+        height: 40,
         borderRadius: 23,
         backgroundColor: '#D30010',
         justifyContent: 'center',
@@ -310,7 +306,7 @@ const styles = StyleSheet.create({
     },
     latestBallText: {
         color: 'white',
-        fontSize: 15,
+        fontSize: 17,
         fontWeight: 'bold',
     },
     // Prize table styles
@@ -399,8 +395,8 @@ const styles = StyleSheet.create({
         padding: 13
     },
     olderBall: {
-        width: 35,
-        height: 35,
+        width: 40,
+        height: 40,
         borderRadius: 20,
         backgroundColor: '#FFA500',
         justifyContent: 'center',
@@ -412,7 +408,7 @@ const styles = StyleSheet.create({
     },
     olderBallText: {
         color: 'white',
-        fontSize: 15,
+        fontSize: 17,
         fontWeight: 'bold',
     },
     divider: {

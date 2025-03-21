@@ -6,7 +6,6 @@ import API_URL from './config';
 
 // Key for storing user ID in AsyncStorage
 const USER_ID_KEY = 'app_user_id';
-const API_URL = `${API_URL}/api/createUser`;
 
 // Get the user ID from AsyncStorage, or generate a new one if it doesn't exist
 export const getUserId = async () => {
@@ -31,7 +30,7 @@ export const getUserId = async () => {
 // Save user ID to database
 export const saveUserToDatabase = async (userId) => {
   try {
-    const response = await axios.post(API_URL, { id: userId });
+    const response = await axios.post(`${API_URL}/createUser`, { id: userId });
     return response.data;
   } catch (error) {
     console.error('Error saving user to database:', error);

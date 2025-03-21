@@ -171,7 +171,7 @@ const HomeScreen = () => {
                 <Image source={logo} style={styles.logo} />
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView>
                 <View style={styles.contentContainer}>
                     <Text style={styles.label}>Jackpot</Text>
                     <AnimatedText value={jackpotValue} style={styles.jackpotValue} />
@@ -179,6 +179,7 @@ const HomeScreen = () => {
                         (Jackpot Mega 6/45 mở thưởng {jackpotDate})
                     </Text>
                 </View>
+                
                 <LotteryDisplay/>
 
                 <View style={styles.divider} />
@@ -277,15 +278,11 @@ function MyTabs() {
 }
 
 const styles = StyleSheet.create({
-    nothing: {
-        fontSize: 30,
-        fontWeight: 'bold'
-    },
     container: {
         flex: 1,
         justifyContent: 'flex-start',  // Align children to the top of the screen
-        alignItems: 'center',
-        backgroundColor: '#A6000C'
+        alignItems: 'stretch',
+        backgroundColor: '#A6000C',
     },
     logoContainer: {
         marginTop: 40,  // Optional, to give space from top
@@ -322,13 +319,12 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
         marginTop: 20,
-        width: '95%',
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 5,
         borderColor: '#E09D00',
-        width: 350
+        width: '95%'
     },
     label: {
         fontSize: 20,
@@ -347,55 +343,6 @@ const styles = StyleSheet.create({
         color: 'red',
         textAlign: 'center',
         fontSize: 16,
-    },
-    resultsContainer: {
-        marginTop: 20,
-        width: '90%'
-    },
-    ticketContainer: {
-        marginBottom: 20,
-        padding: 16,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    ticketTurnLabel: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    ticketTurn: {
-        fontSize: 16,
-        color: 'black',
-        fontWeight: 'bold',
-    },
-    resultNumbersContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-    },
-    ball: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: '#D30010',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 5,
-    },
-    ballText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: 'white',
-    },
-    kyve: {
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginBottom: 10
     },
     vector: {
         ...StyleSheet.absoluteFillObject,
@@ -452,10 +399,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginLeft: 4
     },
-    scrollViewContent: {
-        paddingBottom: 0,
-        flexGrow: 1
-    }
+
 });
 
 export default MyTabs;

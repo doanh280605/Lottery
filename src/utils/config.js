@@ -1,3 +1,3 @@
-const API_URL = 'https://lotteryprediction-j75vkodu0-plddoanhs-projects.vercel.app/api';
+const API_URL = 'https://lottery-prediction-app-b9bd39b4d321.herokuapp.com/api';
 
 export default API_URL;
