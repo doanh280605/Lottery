@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Dimensions, ScrollView, ActivityIndicator } fro
 import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import API_URL from '../../utils/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import MostFrequent from './MostFrequent';
 import LeastFrequent from './LeastFrequent';
@@ -56,19 +58,18 @@ const PowerData = () => {
 
     const fetchAllGuesses = async (ticketType) => {
         try {
-            const response = await fetch(`${API_URL}/allguess?ticketType=${ticketType}`);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch guesses');
-            }
-
-            const guesses = await response.json();
-            setUserGuesses(guesses);
-            console.log('Fetched guesses:', guesses);
+          const userId = await AsyncStorage.getItem('app_user_id');
+          const response = await fetch(`${API_URL}/allguess?ticketType=${ticketType}&userId=${userId}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch guesses');
+          }
+          const guesses = await response.json();
+          setUserGuesses(guesses);
+          console.log('Fetched guesses:', guesses);
         } catch (error) {
-            console.error('Error fetching guesses:', error);
+          console.error('Error fetching guesses:', error);
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
     };
 
